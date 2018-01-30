@@ -1,0 +1,6 @@
+build/
+nbproject/
+.nb-gradle/
+.gradle/
+deploy.sh
+logs/
