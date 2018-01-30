@@ -26,6 +26,8 @@ class StatisticsController {
         return (Request request, Response response) -> {
             LOG.debug("Returning statistics");
             List<FormData> inputData = new DataFileLoader(Configuration.dataFilePath(), GsonFactory.getGson()).load();
+            if (inputData == null)
+                throw new NullPointerException("inputData is null");
             StatisticsData statisticsData = new StatisticsData(inputData);
 //            StatisticsGraph graph = new StatisticsGraph(statisticsData);
             StringBuilder sb = new StringBuilder();

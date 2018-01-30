@@ -33,7 +33,7 @@ public class DataFileLoader {
         if (file.isFile()) {
             return getFormDataFromFile(file);
         }
-        return new ArrayList<>();
+        return null;
     }
 
     private List<FormData> getFormDataFromFile(File file) {
@@ -43,7 +43,7 @@ public class DataFileLoader {
             }.getType());
         } catch (IOException | JsonSyntaxException ex) {
             LOG.warn("Could not load FormData from file " + file.getName(), ex);
-            return new ArrayList<>();
+            return null;
         }
     }
 }
