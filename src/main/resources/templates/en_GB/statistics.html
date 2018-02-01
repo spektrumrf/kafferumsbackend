@@ -1,0 +1,38 @@
+<script src="js/Chart.bundle.min.js"></script>
+
+<h2>Inventarie</h2>
+<canvas id="stock-trend-lines"></canvas>
+
+<script>
+    var ctx = document.getElementById("stock-trend-lines");
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {datasets: ~dataSets~},
+        options: {
+            animation: {
+                duration: 400, // general animation time
+            },
+            hover: {
+                animationDuration: 200, // duration of animations when hovering an item
+            },
+            responsiveAnimationDuration: 200, // animation duration after a resize
+            elements: {
+                line: {
+                    tension: 0,  //disables curves
+                    fill: false //disables shaded area
+                }
+            },
+            scales: {
+                xAxes: [{
+                    type: 'linear',
+                    position: 'bottom'
+                }],
+                yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+            }
+        }
+    });
+</script>

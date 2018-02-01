@@ -2,6 +2,7 @@ package data;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +18,19 @@ public class StatisticsData {
     private final Set<String> keys;
     private final List<Point> data;
 
-    public StatisticsData(Iterable<FormData> inputData) {
+    public StatisticsData(Iterable<FormData> inputData, DataExtrapolator<StatisticsData.Point> extrapolator) {
         List<Point> tempData = convertToDataPoints(inputData);
+        tempData.add(new Point(normalizeMillis(System.currentTimeMillis()), new HashMap<>()));
         this.keys = getAllKeys(tempData);
         Collections.sort(tempData);
-        data = new StatisticsDataExtrapolator().extrapolate(keys, tempData);
+        data = extrapolator.extrapolate(keys, tempData);
     }
 
     private List<Point> convertToDataPoints(Iterable<FormData> inputData) {
         List<Point> data = new ArrayList<>();
         for (FormData formData : inputData) {
-            data.add(new Point(formData.time, formData.inventory));
-        }
+            data.add(new Point(normalizeMillis(formData.time), formData.inventory));
+        } // how to cut/use min? maybe enter interval -> cut
         return data;
     }
 
@@ -47,19 +49,23 @@ public class StatisticsData {
     public List<Point> getData() {
         return data;
     }
-    
+
+    private int normalizeMillis(long time) {
+        return (int) ((time - 1500000000000l) / 60000 - 272595);
+    }
+
     public static class Point implements Comparable<Point> {
 
-        final long timestamp;
+        final int time;
         final Map<String, Integer> inventory;
 
-        Point(long timestamp, Map<String, Integer> inventory) {
-            this.timestamp = timestamp;
+        Point(int timestamp, Map<String, Integer> inventory) {
+            this.time = timestamp;
             this.inventory = inventory;
         }
 
         public long getTimestamp() {
-            return timestamp;
+            return time;
         }
 
         public Map<String, Integer> getInventory() {
@@ -68,16 +74,16 @@ public class StatisticsData {
 
         @Override
         public int compareTo(Point o) {
-            if (o.timestamp - timestamp == 0) {
+            if (o.time - time == 0) {
                 return 0;
             }
-            return o.timestamp - timestamp > 0 ? -1 : 1;
+            return o.time - time > 0 ? -1 : 1;
         }
 
         @Override
         public int hashCode() {
             int hash = 3;
-            hash = 47 * hash + (int) (this.timestamp ^ (this.timestamp >>> 32));
+            hash = 47 * hash + (int) (this.time ^ (this.time >>> 32));
             hash = 47 * hash + Objects.hashCode(this.inventory);
             return hash;
         }
@@ -94,7 +100,7 @@ public class StatisticsData {
                 return false;
             }
             final Point other = (Point) obj;
-            if (this.timestamp != other.timestamp) {
+            if (this.time != other.time) {
                 return false;
             }
             if (!Objects.equals(this.inventory, other.inventory)) {
@@ -105,7 +111,7 @@ public class StatisticsData {
 
         @Override
         public String toString() {
-            return "Point{" + "timestamp=" + timestamp + ", inventory=" + inventory + '}';
+            return "Point{" + "timestamp=" + time + ", inventory=" + inventory + '}';
         }
     }
 }

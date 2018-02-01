@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.staticFileLocation;
 
 /**
  *
@@ -17,6 +18,7 @@ public class KafferumsBackend implements Runnable {
     
     @Override
     public void run() {
+        staticFileLocation("/public");
         port(Configuration.port());
         get(Configuration.statisticsPath(), StatisticsController.handleGet());
         post(Configuration.postPath(), FormController.handlePost());

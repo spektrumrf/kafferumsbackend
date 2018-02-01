@@ -4,6 +4,9 @@ import config.Configuration;
 import data.FormData;
 import data.StatisticsData;
 import data.StatisticsData.Point;
+import data.StatisticsDataDummyExtrapolator;
+import data.StatisticsDataLinearExtrapolator;
+import elements.statistics.StatisticsPage;
 import files.DataFileLoader;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import static spark.template.water.WaterTemplateEngine.render;
+import static spark.template.water.WaterTemplateEngine.waterEngine;
 
 /**
  *
@@ -26,23 +31,26 @@ class StatisticsController {
         return (Request request, Response response) -> {
             LOG.debug("Returning statistics");
             List<FormData> inputData = new DataFileLoader(Configuration.dataFilePath(), GsonFactory.getGson()).load();
-            if (inputData == null)
+            if (inputData == null) {
                 throw new NullPointerException("inputData is null");
-            StatisticsData statisticsData = new StatisticsData(inputData);
-//            StatisticsGraph graph = new StatisticsGraph(statisticsData);
-            StringBuilder sb = new StringBuilder();
-            sb.append("<ul>");
-            for (Point point : statisticsData.getData()) {
-                sb.append("<li> Time: ").append(point.getTimestamp()).append("</li><li><ul>");
-                for (Map.Entry<String, Integer> entry : point.getInventory().entrySet()) {
-                    sb.append("<li>").append(entry.getKey()).append(": ").append(entry.getValue())
-                        .append("</li>");
-                }
-                sb.append("</ul></li>");
+            }
+            StatisticsData statisticsData = new StatisticsData(inputData, new StatisticsDataLinearExtrapolator());
+            return waterEngine().render(render(new StatisticsPage(statisticsData), request));
+        };
+    }
+
+    private static String tempReturn(StatisticsData statisticsData) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<ul>");
+        for (Point point : statisticsData.getData()) {
+            sb.append("<li> Time: ").append(point.getTimestamp()).append("</li><ul>");
+            for (Map.Entry<String, Integer> entry : point.getInventory().entrySet()) {
+                sb.append("<li>").append(entry.getKey()).append(": ").append(entry.getValue())
+                    .append("</li>");
             }
             sb.append("</ul>");
-            return sb.toString();
-//            return waterEngine().render(render(new StatisticsPage(graph), request));
-        };
+        }
+        sb.append("</ul>");
+        return sb.toString();
     }
 }

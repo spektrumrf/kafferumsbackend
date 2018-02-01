@@ -12,9 +12,9 @@ import static org.junit.Assert.*;
  *
  * @author Walter Grönholm
  */
-public class StatisticsDataExtrapolatorTest {
+public class StatisticsDataLinearExtrapolatorTest {
     
-    public StatisticsDataExtrapolatorTest() {
+    public StatisticsDataLinearExtrapolatorTest() {
     }
     
     @Test
@@ -28,7 +28,7 @@ public class StatisticsDataExtrapolatorTest {
         data.add(new StatisticsData.Point(2000, testExtrapolate_secondPointMap()));
         data.add(new StatisticsData.Point(3000, testExtrapolate_thirdPointMap()));
         data.add(new StatisticsData.Point(10000, testExtrapolate_lastPointMap()));
-        StatisticsDataExtrapolator instance = new StatisticsDataExtrapolator();
+        StatisticsDataLinearExtrapolator instance = new StatisticsDataLinearExtrapolator();
         List<StatisticsData.Point> expectedResult = new ArrayList<>();
         expectedResult.add(new StatisticsData.Point(1000, testExtrapolate_expected_firstPointMap()));
         expectedResult.add(new StatisticsData.Point(2000, testExtrapolate_expected_secondPointMap()));

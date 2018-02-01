@@ -9,12 +9,13 @@ import java.util.List;
  *
  * @author Walter Grönholm
  */
-public class StatisticsDataExtrapolator {
+public class StatisticsDataLinearExtrapolator implements DataExtrapolator<StatisticsData.Point> {
 
+    @Override
     public List<StatisticsData.Point> extrapolate(Iterable<String> keys, List<StatisticsData.Point> data) {
         List<StatisticsData.Point> rv = new ArrayList<>();
         for (StatisticsData.Point point : data) {
-            rv.add(new Point(point.timestamp, new HashMap(point.inventory)));
+            rv.add(new Point(point.time, new HashMap(point.inventory)));
         }
         for (String key : keys) {
             long previousPreviousTimestamp = 0l;
@@ -23,7 +24,7 @@ public class StatisticsDataExtrapolator {
             int previousAmount = 0;
             for (StatisticsData.Point dataPoint : rv) {
                 if (!dataPoint.inventory.containsKey(key)) {
-                    Integer extrapolated = extrapolate(dataPoint.timestamp, previousTimestamp, previousPreviousTimestamp,
+                    Integer extrapolated = extrapolate(dataPoint.time, previousTimestamp, previousPreviousTimestamp,
                         previousAmount, previousPreviousAmount);
                     dataPoint.inventory.put(key, extrapolated);
                 } else {
@@ -32,14 +33,14 @@ public class StatisticsDataExtrapolator {
                         long timeDiff = previousTimestamp - previousPreviousTimestamp;
                         int amountDiff = previousAmount - previousPreviousAmount;
                         previousPreviousAmount = amount - amountDiff;
-                        previousPreviousTimestamp = dataPoint.timestamp - timeDiff;
+                        previousPreviousTimestamp = dataPoint.time - timeDiff;
                         previousAmount = amount;
-                        previousTimestamp = dataPoint.timestamp;
+                        previousTimestamp = dataPoint.time;
                     } else {
                         previousPreviousAmount = previousAmount;
                         previousPreviousTimestamp = previousTimestamp;
                         previousAmount = dataPoint.inventory.get(key);
-                        previousTimestamp = dataPoint.timestamp;
+                        previousTimestamp = dataPoint.time;
                     }
 
                 }
