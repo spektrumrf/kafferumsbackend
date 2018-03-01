@@ -24,7 +24,7 @@ class FormController {
     
     private static final Logger LOG = LoggerFactory.getLogger(FormController.class);
 
-    static Route handlePost() {
+    static Route handlePost() {        
         return (Request request, Response response) -> {
             LOG.info("Recieved new message");
             Map<String, String[]> map = request.queryMap().toMap();

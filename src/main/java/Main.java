@@ -10,11 +10,11 @@ import java.io.IOException;
 public class Main {
 
     private static final String DEFAULT_CONFIG_FILE_PATH = "config.ini";
-    
+
     public static void main(String[] args) throws IOException {
-        Configuration.initialize(args.length == 0 || args[0].isEmpty()?
-            DEFAULT_CONFIG_FILE_PATH:
-            args[0]);
+        Configuration.initialize(args.length == 0 || args[0].isEmpty()
+            ? DEFAULT_CONFIG_FILE_PATH
+            : args[0]);
         new KafferumsBackend().run();
     }
 }

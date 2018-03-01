@@ -16,27 +16,29 @@ import java.util.Set;
 public class StatisticsData {
 
     private final Set<String> keys;
-    private final List<Point> data;
+    private final List<DataPoint> data;
 
-    public StatisticsData(Iterable<FormData> inputData, DataExtrapolator<StatisticsData.Point> extrapolator) {
-        List<Point> tempData = convertToDataPoints(inputData);
-        tempData.add(new Point(normalizeMillis(System.currentTimeMillis()), new HashMap<>()));
+    public StatisticsData(Iterable<FormData> inputData, DataExtrapolator<String, StatisticsData.DataPoint> extrapolator) {
+        List<DataPoint> tempData = convertToDataPoints(inputData);
+        tempData.add(new DataPoint(normalizeMillis(System.currentTimeMillis()), new HashMap<>()));
         this.keys = getAllKeys(tempData);
         Collections.sort(tempData);
         data = extrapolator.extrapolate(keys, tempData);
     }
+    
+    //TODO, separate real data from extrapolated data (show it differently)
 
-    private List<Point> convertToDataPoints(Iterable<FormData> inputData) {
-        List<Point> data = new ArrayList<>();
+    private List<DataPoint> convertToDataPoints(Iterable<FormData> inputData) {
+        List<DataPoint> data = new ArrayList<>();
         for (FormData formData : inputData) {
-            data.add(new Point(normalizeMillis(formData.time), formData.inventory));
+            data.add(new DataPoint(normalizeMillis(formData.time), formData.inventory));
         } // how to cut/use min? maybe enter interval -> cut
         return data;
     }
 
-    private Set<String> getAllKeys(List<Point> data) {
+    private Set<String> getAllKeys(List<DataPoint> data) {
         Set<String> keys = new HashSet();
-        for (Point dataPoint : data) {
+        for (DataPoint dataPoint : data) {
             keys.addAll(dataPoint.inventory.keySet());
         }
         return keys;
@@ -46,20 +48,20 @@ public class StatisticsData {
         return keys;
     }
 
-    public List<Point> getData() {
+    public List<DataPoint> getData() {
         return data;
     }
 
-    private int normalizeMillis(long time) {
-        return (int) ((time - 1500000000000l) / 60000 - 272595);
+    private long normalizeMillis(long time) {
+        return (time - 1516355721029l) / (1000 * 60 * 60);
     }
 
-    public static class Point implements Comparable<Point> {
+    public static class DataPoint implements Comparable<DataPoint> {
 
-        final int time;
+        final long time;
         final Map<String, Integer> inventory;
 
-        Point(int timestamp, Map<String, Integer> inventory) {
+        DataPoint(long timestamp, Map<String, Integer> inventory) {
             this.time = timestamp;
             this.inventory = inventory;
         }
@@ -73,7 +75,7 @@ public class StatisticsData {
         }
 
         @Override
-        public int compareTo(Point o) {
+        public int compareTo(DataPoint o) {
             if (o.time - time == 0) {
                 return 0;
             }
@@ -99,7 +101,7 @@ public class StatisticsData {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Point other = (Point) obj;
+            final DataPoint other = (DataPoint) obj;
             if (this.time != other.time) {
                 return false;
             }

@@ -1,6 +1,6 @@
 package data;
 
-import data.StatisticsData.Point;
+import data.StatisticsData.DataPoint;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,20 +9,20 @@ import java.util.List;
  *
  * @author Walter Grönholm
  */
-public class StatisticsDataLinearExtrapolator implements DataExtrapolator<StatisticsData.Point> {
+public class StatisticsDataLinearExtrapolator implements DataExtrapolator<String, StatisticsData.DataPoint> {
 
     @Override
-    public List<StatisticsData.Point> extrapolate(Iterable<String> keys, List<StatisticsData.Point> data) {
-        List<StatisticsData.Point> rv = new ArrayList<>();
-        for (StatisticsData.Point point : data) {
-            rv.add(new Point(point.time, new HashMap(point.inventory)));
+    public List<StatisticsData.DataPoint> extrapolate(Iterable<String> keys, List<StatisticsData.DataPoint> data) {
+        List<StatisticsData.DataPoint> rv = new ArrayList<>();
+        for (StatisticsData.DataPoint point : data) {
+            rv.add(new DataPoint(point.time, new HashMap(point.inventory)));
         }
         for (String key : keys) {
             long previousPreviousTimestamp = 0l;
             long previousTimestamp = 0l;
             int previousPreviousAmount = 0;
             int previousAmount = 0;
-            for (StatisticsData.Point dataPoint : rv) {
+            for (StatisticsData.DataPoint dataPoint : rv) {
                 if (!dataPoint.inventory.containsKey(key)) {
                     Integer extrapolated = extrapolate(dataPoint.time, previousTimestamp, previousPreviousTimestamp,
                         previousAmount, previousPreviousAmount);

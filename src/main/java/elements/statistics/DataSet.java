@@ -9,33 +9,48 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * This class must follow the Json structure of Chart.js dataSets
+ * 
  * @author Walter Grönholm
  */
 public class DataSet {
 
+    /**
+     * Graph line name.
+     */
     final String label;
+    /**
+     * Graph line color.
+     */
     final String borderColor;
+    /**
+     * Graph data points.
+     */
     final List<Point> data;
     final boolean hidden;
 
-    DataSet(String label, Color borderColor, List<Point> data) {
+    DataSet(String label, Color borderColor, List<Point> data, boolean hidden) {
         this.label = label;
-        this.borderColor = toString(borderColor);
+        this.borderColor = toHexString(borderColor);
         this.data = data;
-        this.hidden = data.isEmpty() || data.get(data.size() - 1).y > 0;
+        this.hidden = hidden;
     }
 
-    private String toString(Color color) {
+    private static String toHexString(Color color) {
         return String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
     }
 
-    static List<DataSet> from(StatisticsData data) {
+    static List<DataSet> from(StatisticsData statisticsData) {
         List<DataSet> dataSets = new ArrayList<>();
-        Map<String, Color> colorMap = createColorMap(data.getKeys());
-        Map<String, List<Point>> pointsMap = convertToPointsMap(data);
-        for (String key : data.getKeys()) {
-            dataSets.add(new DataSet(key, colorMap.get(key), pointsMap.get(key)));
+        Map<String, Color> colorMap = createColorMap(statisticsData.getKeys());
+        Map<String, List<Point>> pointsMap = convertToPointsMap(statisticsData);
+        for (String key : statisticsData.getKeys()) {
+            List<Point> data = pointsMap.get(key);
+            dataSets.add(new DataSet(
+                key,
+                colorMap.get(key),
+                data,
+                data.isEmpty() || data.get(data.size() - 1).y > 0));
         }
         return dataSets;
     }
@@ -52,7 +67,7 @@ public class DataSet {
         Map<String, List<Point>> map = new HashMap<>();
         for (String key : data.getKeys()) {
             List<Point> points = new ArrayList<>();
-            for (StatisticsData.Point point : data.getData()) {
+            for (StatisticsData.DataPoint point : data.getData()) {
                 if (point.getInventory().get(key) != null) {
                     points.add(new Point(point.getTimestamp(), point.getInventory().get(key)));
                 }

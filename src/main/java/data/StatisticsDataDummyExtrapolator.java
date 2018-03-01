@@ -6,10 +6,10 @@ import java.util.List;
  *
  * @author Walter Grönholm
  */
-public class StatisticsDataDummyExtrapolator implements DataExtrapolator<StatisticsData.Point> {
+public class StatisticsDataDummyExtrapolator implements DataExtrapolator<String, StatisticsData.DataPoint> {
 
     @Override
-    public List<StatisticsData.Point> extrapolate(Iterable<String> keys, List<StatisticsData.Point> data) {
+    public List<StatisticsData.DataPoint> extrapolate(Iterable<String> keys, List<StatisticsData.DataPoint> data) {
         return data;
     }
 

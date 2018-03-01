@@ -23,23 +23,23 @@ public class StatisticsDataLinearExtrapolatorTest {
         
         Iterable<String> keys = Arrays.asList(
             new String[]{"some_thing", "testing", "reduce 1 per 1000", "reduce 1 per 1000 with increase", "new", "no_data"});
-        List<StatisticsData.Point> data = new ArrayList<>();
-        data.add(new StatisticsData.Point(1000, testExtrapolate_firstPointMap()));
-        data.add(new StatisticsData.Point(2000, testExtrapolate_secondPointMap()));
-        data.add(new StatisticsData.Point(3000, testExtrapolate_thirdPointMap()));
-        data.add(new StatisticsData.Point(10000, testExtrapolate_lastPointMap()));
+        List<StatisticsData.DataPoint> data = new ArrayList<>();
+        data.add(new StatisticsData.DataPoint(1000, testExtrapolate_firstPointMap()));
+        data.add(new StatisticsData.DataPoint(2000, testExtrapolate_secondPointMap()));
+        data.add(new StatisticsData.DataPoint(3000, testExtrapolate_thirdPointMap()));
+        data.add(new StatisticsData.DataPoint(10000, testExtrapolate_lastPointMap()));
         StatisticsDataLinearExtrapolator instance = new StatisticsDataLinearExtrapolator();
-        List<StatisticsData.Point> expectedResult = new ArrayList<>();
-        expectedResult.add(new StatisticsData.Point(1000, testExtrapolate_expected_firstPointMap()));
-        expectedResult.add(new StatisticsData.Point(2000, testExtrapolate_expected_secondPointMap()));
-        expectedResult.add(new StatisticsData.Point(3000, testExtrapolate_expected_thirdPointMap()));
-        expectedResult.add(new StatisticsData.Point(10000, testExtrapolate_expected_lastPointMap()));
-        List<StatisticsData.Point> result = instance.extrapolate(keys, data);
+        List<StatisticsData.DataPoint> expectedResult = new ArrayList<>();
+        expectedResult.add(new StatisticsData.DataPoint(1000, testExtrapolate_expected_firstPointMap()));
+        expectedResult.add(new StatisticsData.DataPoint(2000, testExtrapolate_expected_secondPointMap()));
+        expectedResult.add(new StatisticsData.DataPoint(3000, testExtrapolate_expected_thirdPointMap()));
+        expectedResult.add(new StatisticsData.DataPoint(10000, testExtrapolate_expected_lastPointMap()));
+        List<StatisticsData.DataPoint> result = instance.extrapolate(keys, data);
         StringBuilder errorMessage = new StringBuilder();
         assertEquals("The result size is different", expectedResult.size(), result.size());
         for (int i = 0; i < expectedResult.size(); i++) {
-            StatisticsData.Point expectedPoint = expectedResult.get(i);
-            StatisticsData.Point resultedPoint = result.get(i);
+            StatisticsData.DataPoint expectedPoint = expectedResult.get(i);
+            StatisticsData.DataPoint resultedPoint = result.get(i);
             if (!expectedPoint.equals(resultedPoint)) {
                 errorMessage.append("\n").append(resultedPoint).append("\n does not equal expected point\n").append(expectedPoint);
             }

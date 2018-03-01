@@ -6,8 +6,14 @@ import java.util.List;
  *
  * @author Walter Grönholm
  */
-interface DataExtrapolator<T> {
+interface DataExtrapolator<K, V> {
 
-    List<T> extrapolate(Iterable<String> keys, List<T> data);
+    /**
+     * Extrapolates the given data list to a new, fuller data list.
+     * @param keys The keys of the data items which should be extrapolated.
+     * @param data §
+     * @return A new list with more or as much data as given
+     */
+    List<V> extrapolate(Iterable<K> keys, List<V> data);
 
 }

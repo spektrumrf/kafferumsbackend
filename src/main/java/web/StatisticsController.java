@@ -3,8 +3,7 @@ package web;
 import config.Configuration;
 import data.FormData;
 import data.StatisticsData;
-import data.StatisticsData.Point;
-import data.StatisticsDataDummyExtrapolator;
+import data.StatisticsData.DataPoint;
 import data.StatisticsDataLinearExtrapolator;
 import elements.statistics.StatisticsPage;
 import files.DataFileLoader;
@@ -16,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import static spark.template.water.WaterTemplateEngine.render;
 import static spark.template.water.WaterTemplateEngine.waterEngine;
+import static spark.template.water.WaterTemplateEngine.render;
 
 /**
  *
@@ -42,7 +41,7 @@ class StatisticsController {
     private static String tempReturn(StatisticsData statisticsData) {
         StringBuilder sb = new StringBuilder();
         sb.append("<ul>");
-        for (Point point : statisticsData.getData()) {
+        for (DataPoint point : statisticsData.getData()) {
             sb.append("<li> Time: ").append(point.getTimestamp()).append("</li><ul>");
             for (Map.Entry<String, Integer> entry : point.getInventory().entrySet()) {
                 sb.append("<li>").append(entry.getKey()).append(": ").append(entry.getValue())
