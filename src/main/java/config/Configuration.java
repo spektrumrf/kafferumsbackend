@@ -46,32 +46,37 @@ public class Configuration {
         }
     }
     
+    //Sections
+    private static final String DATA = "data";
+    private static final String WEBAPP = "webapp";
+    private static final String FORM = "form";
+    
     public static String dataFilePath() {
-        return CONFIG.ini.get("data", "file");
+        return CONFIG.ini.get(DATA, "file");
     }
 
     public static int port() {
-        return CONFIG.ini.get("webapp", "port", int.class);
+        return CONFIG.ini.get(WEBAPP, "port", int.class);
     }
 
-    public static String postPath() {
-        return CONFIG.ini.get("webapp", "postPath");
+    public static String inventoryPostPath() {
+        return CONFIG.ini.get(WEBAPP, "inventoryPostPath");
     }
     
     public static String statisticsPath() {
-        return CONFIG.ini.get("webapp", "statisticsPath");
+        return CONFIG.ini.get(WEBAPP, "statisticsPath");
     }
 
     public static int maxFormMapSize() {
-        return CONFIG.ini.get("form", "maxSize", int.class);
+        return CONFIG.ini.get(FORM, "maxSize", int.class);
     }
 
     public static int feedbackTextWarningSize() {
-        return CONFIG.ini.get("form", "feedbackWarningSize", int.class);
+        return CONFIG.ini.get(FORM, "feedbackWarningSize", int.class);
     }
 
     public static int feedbackTextMaxSize() {
-        return CONFIG.ini.get("form", "feedbackMaxSize", int.class);
+        return CONFIG.ini.get(FORM, "feedbackMaxSize", int.class);
     }
 
     private static class TypedEntry<T> {
@@ -94,13 +99,13 @@ public class Configuration {
 
     private static Set<TypedEntry> getEntrySet() {
         Set<TypedEntry> entrySet = new HashSet<>();
-        entrySet.add(new TypedEntry("data", "file", String.class));
-        entrySet.add(new TypedEntry("webapp", "port", int.class));
-        entrySet.add(new TypedEntry("webapp", "postPath", String.class));
-        entrySet.add(new TypedEntry("webapp", "statisticsPath", String.class));
-        entrySet.add(new TypedEntry("form", "maxSize", int.class));
-        entrySet.add(new TypedEntry("form", "feedbackWarningSize", int.class));
-        entrySet.add(new TypedEntry("form", "feedbackMaxSize", int.class));
+        entrySet.add(new TypedEntry(DATA, "file", String.class));
+        entrySet.add(new TypedEntry(WEBAPP, "port", int.class));
+        entrySet.add(new TypedEntry(WEBAPP, "postPath", String.class));
+        entrySet.add(new TypedEntry(WEBAPP, "statisticsPath", String.class));
+        entrySet.add(new TypedEntry(FORM, "maxSize", int.class));
+        entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", int.class));
+        entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", int.class));
         return entrySet;
     }
 
