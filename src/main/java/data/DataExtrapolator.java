@@ -6,7 +6,7 @@ import java.util.List;
  *
  * @author Walter Grönholm
  */
-interface DataExtrapolator<K, V> {
+public interface DataExtrapolator<K, V> {
 
     /**
      * Extrapolates the given data list to a new, fuller data list.

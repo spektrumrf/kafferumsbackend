@@ -13,8 +13,8 @@ public class PasswordUtils {
     private static final Logger LOG = LoggerFactory.getLogger(PasswordUtils.class);
     
     private static final int ITERATIONS = 10000;
-    private static final int SALT_LENGTH = 30;
     private static final int KEY_LENGTH = 224;
+    private static final int SALT_LENGTH = 256 - KEY_LENGTH - 2;
 
     public static String hashify(String password) throws Exception {
         byte[] salt = SecureRandom.getInstance("SHA1PRNG").generateSeed(SALT_LENGTH);
