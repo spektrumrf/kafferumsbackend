@@ -1,6 +1,5 @@
 package data;
 
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,7 +7,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Walter Grönholm
  */
-public abstract class DataAccessObject {
+public abstract class DataAccessObject implements UserDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessObject.class);
 
@@ -29,8 +28,4 @@ public abstract class DataAccessObject {
     }
 
     abstract void testConnection(int timeout);
-
-    abstract public List<String> getUserNames();
-
-    abstract public String getPassword(String userName);
 }
