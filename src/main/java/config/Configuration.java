@@ -47,24 +47,40 @@ public class Configuration {
     }
     
     //Sections
-    private static final String DATA = "data";
+    private static final String DATABASE = "database";
     private static final String WEBAPP = "webapp";
     private static final String FORM = "form";
     
     public static String dataFilePath() {
-        return CONFIG.ini.get(DATA, "file");
+        return CONFIG.ini.get(FORM, "file");
+    }
+    
+    public static String databaseUrl() {
+        return CONFIG.ini.get(DATABASE, "url", String.class);
+    }
+    
+    public static String databaseUser() {
+        return CONFIG.ini.get(DATABASE, "user", String.class);
+    }
+    
+    public static String databasePass() {
+        return CONFIG.ini.get(DATABASE, "pass", String.class);
+    }
+
+    public static int databaseTimeout() {
+        return CONFIG.ini.get(DATABASE, "timeoutMillis", int.class);
     }
 
     public static int port() {
         return CONFIG.ini.get(WEBAPP, "port", int.class);
     }
 
-    public static String inventoryPostPath() {
-        return CONFIG.ini.get(WEBAPP, "inventoryPostPath");
+    public static String inventoryFormPath() {
+        return CONFIG.ini.get(WEBAPP, "inventoryFormPath");
     }
     
-    public static String statisticsPath() {
-        return CONFIG.ini.get(WEBAPP, "statisticsPath");
+    public static String statisticsGraphPath() {
+        return CONFIG.ini.get(WEBAPP, "statisticsGraphPath");
     }
 
     public static int maxFormMapSize() {
@@ -99,10 +115,14 @@ public class Configuration {
 
     private static List<TypedEntry> getEntrySet() {
         List<TypedEntry> entrySet = new ArrayList<>();
-        entrySet.add(new TypedEntry(DATA, "file", String.class));
+        entrySet.add(new TypedEntry(FORM, "file", String.class));
+        entrySet.add(new TypedEntry(DATABASE, "url", String.class));
+        entrySet.add(new TypedEntry(DATABASE, "user", String.class));
+        entrySet.add(new TypedEntry(DATABASE, "pass", String.class));
+        entrySet.add(new TypedEntry(DATABASE, "timeoutMillis", int.class));
         entrySet.add(new TypedEntry(WEBAPP, "port", int.class));
-        entrySet.add(new TypedEntry(WEBAPP, "postPath", String.class));
-        entrySet.add(new TypedEntry(WEBAPP, "statisticsPath", String.class));
+        entrySet.add(new TypedEntry(WEBAPP, "inventoryFormPath", String.class));
+        entrySet.add(new TypedEntry(WEBAPP, "statisticsGraphPath", String.class));
         entrySet.add(new TypedEntry(FORM, "maxSize", int.class));
         entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", int.class));
         entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", int.class));

@@ -6,7 +6,7 @@ import data.StatisticsData;
 import data.StatisticsDataLinearExtrapolator;
 import files.DataFileLoader;
 import java.util.List;
-import json.GsonFactory;
+import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -24,13 +24,12 @@ class StatisticsController {
     static Route handleGet() {
         return (Request request, Response response) -> {
             LOG.debug("Returning statistics");
-            List<InventoryFormData> inputData = new DataFileLoader(Configuration.dataFilePath(), GsonFactory.getGson()).load();
+            List<InventoryFormData> inputData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.getGson()).load();
             if (inputData == null) {
                 throw new NullPointerException("inputData is null");
             }
             StatisticsData statisticsData = new StatisticsData(inputData, new StatisticsDataLinearExtrapolator());
-            return ""; //return statisticsData in JSON
-//            return waterEngine().render(render(new StatisticsPage(statisticsData), request));
+            return JsonUtils.jsonResponse(statisticsData, StatisticsData.class, response);
         };
     }
     

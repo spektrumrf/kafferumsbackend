@@ -8,7 +8,7 @@ import files.DataFileSaver;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import json.GsonFactory;
+import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -33,14 +33,14 @@ class InventoryFormController {
             LOG.info("Recieved new message");
             Map<String, String[]> map = request.queryMap().toMap();
             InventoryFormData data = new InventoryFormData(map);
-            List<InventoryFormData> allData = new DataFileLoader(Configuration.dataFilePath(), GsonFactory.getGson()).load();
+            List<InventoryFormData> allData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.getGson()).load();
             if (allData == null) {
                 allData = new ArrayList<>();
                 allData.add(data);
-                new DataFileSaver(Configuration.dataFilePath()+'.'+System.currentTimeMillis(), GsonFactory.getGson()).save(allData);
+                new DataFileSaver(Configuration.dataFilePath()+'.'+System.currentTimeMillis(), JsonUtils.getGson()).save(allData);
             } else {
                 allData.add(data);
-                new DataFileSaver(Configuration.dataFilePath(), GsonFactory.getGson()).save(allData);
+                new DataFileSaver(Configuration.dataFilePath(), JsonUtils.getGson()).save(allData);
             }
             response.redirect("http://www.spektrum.fi/kafferummet");
             halt();

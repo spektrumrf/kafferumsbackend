@@ -1,7 +1,8 @@
 
-import web.Router;
 import config.Configuration;
+import data.DataAccessObject;
 import java.io.IOException;
+import web.Router;
 
 /**
  *
@@ -15,6 +16,11 @@ public class Main {
         Configuration.initialize(args.length == 0 || args[0].isEmpty()
             ? DEFAULT_CONFIG_FILE_PATH
             : args[0]);
+        DataAccessObject.init(
+            Configuration.databaseUrl(),
+            Configuration.databaseUser(),
+            Configuration.databasePass(),
+            Configuration.databaseTimeout());
         new Router().run();
     }
 }
