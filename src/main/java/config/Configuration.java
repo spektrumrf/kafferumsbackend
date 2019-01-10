@@ -2,8 +2,8 @@ package config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.ini4j.Ini;
 
 /**
@@ -15,7 +15,7 @@ public class Configuration {
     private static Configuration CONFIG;
 
     private final Ini ini = new Ini();
-    private static final Set<TypedEntry> CONFIG_ENTRIES = getEntrySet();
+    private static final List<TypedEntry> CONFIG_ENTRIES = getEntrySet();
 
     public static void initialize(String filePath) throws IOException {
         initialize(new Configuration(), filePath);
@@ -31,7 +31,7 @@ public class Configuration {
         validateIni(ini, CONFIG_ENTRIES);
     }
 
-    void validateIni(Ini ini, Set<TypedEntry> typedEntries) {
+    void validateIni(Ini ini, Iterable<TypedEntry> typedEntries) {
         String erronousFields = "";
         for (TypedEntry typedEntry : typedEntries) {
             if (!typedEntry.validate(ini)) {
@@ -97,8 +97,8 @@ public class Configuration {
 
     }
 
-    private static Set<TypedEntry> getEntrySet() {
-        Set<TypedEntry> entrySet = new HashSet<>();
+    private static List<TypedEntry> getEntrySet() {
+        List<TypedEntry> entrySet = new ArrayList<>();
         entrySet.add(new TypedEntry(DATA, "file", String.class));
         entrySet.add(new TypedEntry(WEBAPP, "port", int.class));
         entrySet.add(new TypedEntry(WEBAPP, "postPath", String.class));
