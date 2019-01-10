@@ -18,7 +18,7 @@ public class StatisticsData {
     private final Set<String> keys;
     private final List<DataPoint> data;
 
-    public StatisticsData(Iterable<FormData> inputData, DataExtrapolator<String, StatisticsData.DataPoint> extrapolator) {
+    public StatisticsData(Iterable<InventoryFormData> inputData, DataExtrapolator<String, StatisticsData.DataPoint> extrapolator) {
         List<DataPoint> tempData = convertToDataPoints(inputData);
         tempData.add(new DataPoint(normalizeMillis(System.currentTimeMillis()), new HashMap<>()));
         this.keys = getAllKeys(tempData);
@@ -28,9 +28,9 @@ public class StatisticsData {
     
     //TODO, separate real data from extrapolated data (show it differently)
 
-    private List<DataPoint> convertToDataPoints(Iterable<FormData> inputData) {
+    private List<DataPoint> convertToDataPoints(Iterable<InventoryFormData> inputData) {
         List<DataPoint> data = new ArrayList<>();
-        for (FormData formData : inputData) {
+        for (InventoryFormData formData : inputData) {
             data.add(new DataPoint(normalizeMillis(formData.time), formData.inventory));
         } // how to cut/use min? maybe enter interval -> cut
         return data;

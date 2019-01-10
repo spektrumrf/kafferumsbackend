@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author Walter Grönholm
  */
-public class FormData implements Serializable {
+public class InventoryFormData implements Serializable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FormData.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InventoryFormData.class);
 
     final long time;
     final String feedback;
     final Map<String, Integer> inventory;
 
-    public FormData(Map<String, String[]> formData) {
+    public InventoryFormData(Map<String, String[]> formData) {
         this.time = System.currentTimeMillis();
         String[] get = formData.get("text_feedback");
         this.feedback = get == null || get.length == 0

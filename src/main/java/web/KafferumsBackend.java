@@ -21,7 +21,7 @@ public class KafferumsBackend implements Runnable {
         staticFileLocation("/public");
         port(Configuration.port());
         get(Configuration.statisticsPath(), StatisticsController.handleGet());
-        post(Configuration.postPath(), FormController.handlePost());
+        post(Configuration.postPath(), InventoryFormController.handlePost());
 
         LOG.info("Break room listener is listening on path :" + Configuration.port() + Configuration.postPath());
     }

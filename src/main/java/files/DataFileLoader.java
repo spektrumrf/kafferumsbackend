@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import data.FormData;
+import data.InventoryFormData;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class DataFileLoader {
         this.fileName = fileName;
     }
 
-    public List<FormData> load() {
+    public List<InventoryFormData> load() {
         File file = new File(fileName);
         if (file.isFile()) {
             return getFormDataFromFile(file);
@@ -36,10 +36,10 @@ public class DataFileLoader {
         return null;
     }
 
-    private List<FormData> getFormDataFromFile(File file) {
+    private List<InventoryFormData> getFormDataFromFile(File file) {
         try (JsonReader reader = new JsonReader(new FileReader(file));) {
             reader.setLenient(true);
-            return gson.fromJson(reader, new TypeToken<List<FormData>>() {
+            return gson.fromJson(reader, new TypeToken<List<InventoryFormData>>() {
             }.getType());
         } catch (IOException | JsonSyntaxException ex) {
             LOG.warn("Could not load FormData from file " + file.getName(), ex);

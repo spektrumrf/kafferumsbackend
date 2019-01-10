@@ -1,7 +1,7 @@
 package files;
 
 import com.google.gson.Gson;
-import data.FormData;
+import data.InventoryFormData;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class DataFileSaver {
         this.fileName = fileName;
     }
 
-    public boolean save(List<FormData> data) {
+    public boolean save(List<InventoryFormData> data) {
         File file = new File(fileName);
         String json = gson.toJson(data);
         LOG.info("Appending FormData to file");

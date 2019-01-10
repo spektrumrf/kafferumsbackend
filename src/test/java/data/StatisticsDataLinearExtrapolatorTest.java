@@ -28,13 +28,16 @@ public class StatisticsDataLinearExtrapolatorTest {
         data.add(new StatisticsData.DataPoint(2000, testExtrapolate_secondPointMap()));
         data.add(new StatisticsData.DataPoint(3000, testExtrapolate_thirdPointMap()));
         data.add(new StatisticsData.DataPoint(10000, testExtrapolate_lastPointMap()));
-        StatisticsDataLinearExtrapolator instance = new StatisticsDataLinearExtrapolator();
+        
         List<StatisticsData.DataPoint> expectedResult = new ArrayList<>();
         expectedResult.add(new StatisticsData.DataPoint(1000, testExtrapolate_expected_firstPointMap()));
         expectedResult.add(new StatisticsData.DataPoint(2000, testExtrapolate_expected_secondPointMap()));
         expectedResult.add(new StatisticsData.DataPoint(3000, testExtrapolate_expected_thirdPointMap()));
         expectedResult.add(new StatisticsData.DataPoint(10000, testExtrapolate_expected_lastPointMap()));
+        
+        StatisticsDataLinearExtrapolator instance = new StatisticsDataLinearExtrapolator();
         List<StatisticsData.DataPoint> result = instance.extrapolate(keys, data);
+        
         StringBuilder errorMessage = new StringBuilder();
         assertEquals("The result size is different", expectedResult.size(), result.size());
         for (int i = 0; i < expectedResult.size(); i++) {
