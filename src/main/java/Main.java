@@ -1,5 +1,5 @@
 
-import web.KafferumsBackend;
+import web.Router;
 import config.Configuration;
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ public class Main {
         Configuration.initialize(args.length == 0 || args[0].isEmpty()
             ? DEFAULT_CONFIG_FILE_PATH
             : args[0]);
-        new KafferumsBackend().run();
+        new Router().run();
     }
 }
 /*

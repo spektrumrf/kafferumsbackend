@@ -3,20 +3,17 @@ package web;
 import config.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static spark.Spark.get;
 import static spark.Spark.port;
-import static spark.Spark.post;
 import static spark.Spark.staticFileLocation;
-import static spark.Spark.get;
 import static spark.Spark.post;
 
 /**
  *
  * @author Walter Grönholm
  */
-public class KafferumsBackend implements Runnable {
+public class Router implements Runnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KafferumsBackend.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Router.class);
     
     @Override
     public void run() {
