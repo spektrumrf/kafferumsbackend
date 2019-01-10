@@ -38,4 +38,14 @@ public class NormDataAccessObject extends DataAccessObject {
     public String getPassword(String userName) {
         return db.sql("SELECT LOGIN.DATA FROM LOGIN JOIN USER ON LOGIN.ID = USER.ID_LOGIN WHERE USER.NAME = ?", userName).first(String.class);
     }
+
+    @Override
+    public int getLoginAttempts(String userName) {
+        return db.sql("SELECT LOGIN.ATTEMPTS FROM LOGIN JOIN USER ON LOGIN.ID = USER.ID_LOGIN WHERE USER.NAME = ?", userName).first(int.class);
+    }
+
+    @Override
+    public void setLoginAttempts(String userName, int failedAttempts) {
+        db.sql("UPDATE LOGIN SET ATTEMPTS = ? WHERE ID = (SELECT ID_LOGIN FROM USER WHERE NAME = ?)", failedAttempts, userName).execute();
+    }
 }
