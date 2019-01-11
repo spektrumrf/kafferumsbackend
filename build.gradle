@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.sparkjava:spark-core:2.3'
+    compile 'com.sparkjava:spark-core:2.7.2'
     compile 'org.slf4j:slf4j-log4j12:1.7.25'
     compile group: 'org.ini4j', name: 'ini4j', version: '0.5.1'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
