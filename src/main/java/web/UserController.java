@@ -43,7 +43,7 @@ class UserController {
         String storedPin = DataAccessObject.getInstance().getPassword(userName);
         int failedAttempts = DataAccessObject.getInstance().getLoginAttempts(userName); //todo minimize DB calls
 
-        Boolean success = PasswordUtils.verify(pin, storedPin);
+        boolean success = PasswordUtils.verify(pin, storedPin);
         if (success) {
             failedAttempts = 0;
         } else {
