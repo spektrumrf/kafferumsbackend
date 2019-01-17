@@ -1,6 +1,7 @@
 
 import config.Configuration;
 import data.DataAccessObject;
+import data.UserData;
 import java.io.IOException;
 import web.Router;
 

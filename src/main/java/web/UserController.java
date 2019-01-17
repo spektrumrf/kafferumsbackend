@@ -1,6 +1,7 @@
 package web;
 
 import data.DataAccessObject;
+import data.UserData;
 import java.util.List;
 import json.JsonUtils;
 import org.slf4j.Logger;
@@ -51,7 +52,12 @@ class UserController {
         }
 
         DataAccessObject.getInstance().setLoginAttempts(userName, failedAttempts);
-
+        
+        if(success){
+            UserData userData = DataAccessObject.getInstance().getUserData(userName);
+            request.session(true).attribute("user", userData);
+        }
+        
         Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
         return JsonUtils.jsonResponse(success, Boolean.class, response);
     };

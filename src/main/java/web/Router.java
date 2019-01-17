@@ -4,6 +4,7 @@ import config.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Route;
+import spark.Spark;
 import static spark.Spark.path;
 import static spark.Spark.before;
 import static spark.Spark.port;
@@ -26,7 +27,7 @@ public class Router implements Runnable {
         response.header("Access-Control-Allow-Methods", "POST");
         response.header("Access-Control-Allow-Headers", "accept, content-type");
         response.header("Access-Control-Max-Age", "1728000");
-        return "";
+        return "true";
     };
 
     @Override
@@ -37,6 +38,14 @@ public class Router implements Runnable {
 
         before("/*", (req, res) -> LOG.info("Received " + req.requestMethod() + " call to " + req.uri()));
         path("/api", () -> {
+            before("/auth/*", (req, res) -> {
+                if(req.session(true).attribute("user") == null){
+                    Spark.halt(401, "You are not worthy!");
+                }
+            });
+            path("/auth", () -> {
+                get("/names", UserController.getUserNames);
+            });
             path("/user", () -> {
                 get("/names", UserController.getUserNames);
                 options("/pin", approveJsonPost);

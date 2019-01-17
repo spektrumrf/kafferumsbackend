@@ -48,4 +48,9 @@ public class NormDataAccessObject extends DataAccessObject {
     public void setLoginAttempts(String userName, int failedAttempts) {
         db.sql("UPDATE LOGIN SET ATTEMPTS = ? WHERE ID = (SELECT ID_LOGIN FROM USER WHERE NAME = ?)", failedAttempts, userName).execute();
     }
+
+    @Override
+    public UserData getUserData(String userName) {
+        return db.where("name=?", userName).first(UserData.class);
+    }
 }
