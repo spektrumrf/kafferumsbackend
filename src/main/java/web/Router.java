@@ -38,20 +38,20 @@ public class Router implements Runnable {
 
         before("/*", (req, res) -> LOG.info("Received " + req.requestMethod() + " call to " + req.uri()));
         path("/api", () -> {
-            before("/auth/*", (req, res) -> {
-                if(req.session(true).attribute("user") == null){
-                    Spark.halt(401, "You are not worthy!");
-                }
-            });
-            path("/auth", () -> {
-                get("/names", UserController.getUserNames);
-                get("/logout", UserController.logout);
-            });
+            before("/user/*", UserController.verifyLoggedIn);
             path("/user", () -> {
-                get("/names", UserController.getUserNames);
-                options("/pin", approveJsonPost);
-                post("/pin", UserController.verifyPIN);
+                get("/logout", UserController.logout);
+                options("/purchase", approveJsonPost);
+                post("/purchase", PurchaseController.purchase);
+                //get history
             });
+            before("/admin/*", UserController.verifyAdmin);
+            path("/admin", () -> {
+                //TODO add stuff here
+            });
+            get("/names", UserController.getUserNames);
+            options("/pin", approveJsonPost);
+            post("/pin", UserController.verifyPIN);
         });
 
         LOG.info("Break room listener is listening on :" + Configuration.port());

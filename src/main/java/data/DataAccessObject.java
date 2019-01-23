@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Walter Grönholm
  */
-public abstract class DataAccessObject implements UserDAO {
+public abstract class DataAccessObject implements UserDAO, LedgerDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessObject.class);
 

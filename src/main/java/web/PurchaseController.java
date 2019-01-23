@@ -1,6 +1,7 @@
 package web;
 
 import config.Configuration;
+import data.DataAccessObject;
 import data.ItemData;
 import data.LedgerData;
 import data.PurchaseData;
@@ -98,7 +99,7 @@ public class PurchaseController {
     }
 
     private static void authorizePurchase(LedgerData ledgerData, PurchaseData purchaseData) {
-        throw new UnsupportedOperationException("TODO");
+        DataAccessObject.getInstance().addPurchase(ledgerData.id, purchaseData);
     }
 
 }

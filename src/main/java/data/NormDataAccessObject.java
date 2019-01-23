@@ -1,5 +1,6 @@
 package data;
 
+import com.dieselpoint.norm.Transaction;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -53,4 +54,21 @@ public class NormDataAccessObject extends DataAccessObject {
     public UserData getUserData(String userName) {
         return db.where("name=?", userName).first(UserData.class);
     }
+
+    @Override
+    public void addPurchase(int ledgerId, PurchaseData purchaseData) {
+        Transaction transation = db.startTransaction();
+        db.transaction(transation).insert(purchaseData).execute();
+        for (PurchaseData.Item item : purchaseData.purchaseItems) {
+            db.transaction(transation).sql(
+                "INSERT INTO PURCHASEITEM VALUES (?, ?, ?, ?)",
+                purchaseData.id,
+                item.itemData.id,
+                item.amount,
+                item.price
+            ).execute();
+        }
+        transation.commit();
+    }
+
 }

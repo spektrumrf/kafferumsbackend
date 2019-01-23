@@ -8,10 +8,12 @@ import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import security.PasswordUtils;
+import spark.Filter;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.Session;
+import spark.Spark;
 
 /**
  * Handles User data requests
@@ -25,7 +27,7 @@ class UserController {
     private static final double INCREMENTAL_TIMEOUT = 1200.0;
     static final String USER = "user";
 
-    static Route getUserNames = (Request request, Response response) -> {
+    static final Route getUserNames = (Request request, Response response) -> {
         List<String> userNames = DataAccessObject.getInstance().getUserNames();
         return JsonUtils.jsonResponse(userNames, List.class, response);
     };
@@ -36,7 +38,7 @@ class UserController {
         public String userName;
     }
 
-    static Route verifyPIN = (Request request, Response response) -> {
+    static final Route verifyPIN = (Request request, Response response) -> {
         LoginAttempt attempt = JsonUtils.getGson().fromJson(request.body(), LoginAttempt.class);
 
         String pin = attempt.pin;
@@ -65,7 +67,7 @@ class UserController {
         return JsonUtils.jsonResponse(success, Boolean.class, response);
     };
 
-    static Route logout = (Request request, Response response) -> {
+    static final Route logout = (Request request, Response response) -> {
         removeAllAttributes(request.session(true));
         return null;
     };
@@ -76,5 +78,23 @@ class UserController {
             session.removeAttribute(attribute);
         }
     }
+    
+    static final Filter verifyLoggedIn = (Request request, Response response) -> {
+        UserData userData = (UserData) request.session(true).attribute(USER);
+        if (userData == null) {
+            Spark.halt(401, "You are not worthy!");
+        }
+    };
+
+    static final Filter verifyAdmin = (Request request, Response response) -> {
+        UserData userData = (UserData) request.session(true).attribute(USER);
+        if (userData == null) {
+            Spark.halt(401, "You are not worthy!");
+        }
+        boolean isAdmin = true; //TODO: check userData.groupId
+        if (!isAdmin) {
+            Spark.halt(401, "You are not worthy!");
+        }
+    };
 
 }
