@@ -45,6 +45,7 @@ public class Router implements Runnable {
             });
             path("/auth", () -> {
                 get("/names", UserController.getUserNames);
+                get("/logout", UserController.logout);
             });
             path("/user", () -> {
                 get("/names", UserController.getUserNames);

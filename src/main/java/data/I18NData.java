@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * @author Walter Grönholm
  */
 @Table(name = "I18N")
-public class InternationalizationData {
+public class I18NData {
 
     private static final String SEPARATOR = "::";
 

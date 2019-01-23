@@ -3,6 +3,7 @@ package web;
 import data.DataAccessObject;
 import data.UserData;
 import java.util.List;
+import java.util.Set;
 import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import security.PasswordUtils;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import spark.Session;
 
 /**
  * Handles User data requests
@@ -21,13 +23,15 @@ class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private static final double INCREMENTAL_TIMEOUT = 1200.0;
+    static final String USER = "user";
 
     static Route getUserNames = (Request request, Response response) -> {
         List<String> userNames = DataAccessObject.getInstance().getUserNames();
         return JsonUtils.jsonResponse(userNames, List.class, response);
     };
-    
+
     private static class LoginAttempt {
+
         public String pin;
         public String userName;
     }
@@ -37,9 +41,8 @@ class UserController {
 
         String pin = attempt.pin;
         String userName = attempt.userName;
-        
-        //TODO: validate user name
 
+        //TODO: validate that the user exists
         LOG.info("Verifying PIN for " + userName + " coming from " + request.ip());
         String storedPin = DataAccessObject.getInstance().getPassword(userName);
         int failedAttempts = DataAccessObject.getInstance().getLoginAttempts(userName); //todo minimize DB calls
@@ -52,14 +55,26 @@ class UserController {
         }
 
         DataAccessObject.getInstance().setLoginAttempts(userName, failedAttempts);
-        
-        if(success){
+
+        if (success) {
             UserData userData = DataAccessObject.getInstance().getUserData(userName);
-            request.session(true).attribute("user", userData);
+            request.session(true).attribute(USER, userData);
         }
-        
+
         Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
         return JsonUtils.jsonResponse(success, Boolean.class, response);
     };
+
+    static Route logout = (Request request, Response response) -> {
+        removeAllAttributes(request.session(true));
+        return null;
+    };
+
+    private static void removeAllAttributes(Session session) {
+        Set<String> attributes = session.attributes();
+        for (String attribute : attributes) {
+            session.removeAttribute(attribute);
+        }
+    }
 
 }

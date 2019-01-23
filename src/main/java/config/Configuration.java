@@ -50,6 +50,7 @@ public class Configuration {
     private static final String DATABASE = "database";
     private static final String WEBAPP = "webapp";
     private static final String FORM = "form";
+    private static final String LEDGER = "ledger";
     
     public static String dataFilePath() {
         return CONFIG.ini.get(FORM, "file");
@@ -94,6 +95,10 @@ public class Configuration {
     public static int feedbackTextMaxSize() {
         return CONFIG.ini.get(FORM, "feedbackMaxSize", int.class);
     }
+    
+    public static int ledgerMinimumBalance() {
+        return CONFIG.ini.get(LEDGER, "minimumBalanceCents", int.class);
+    }
 
     private static class TypedEntry<T> {
 
@@ -126,6 +131,7 @@ public class Configuration {
         entrySet.add(new TypedEntry(FORM, "maxSize", int.class));
         entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", int.class));
         entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", int.class));
+        entrySet.add(new TypedEntry(LEDGER, "minimumBalanceCents", int.class));
         return entrySet;
     }
 

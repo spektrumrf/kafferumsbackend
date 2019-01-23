@@ -1,7 +1,9 @@
-INSERT INTO I18N (KEY, FINNISH, SWEDISH, ENGLISH)
-values ('item_cents', 'senttiä', 'cent', 'cents');
+INSERT INTO I18N (KEY, FINNISH, SWEDISH, ENGLISH) values ('item_cents', 'senttiä', 'cent', 'cents');
 
 select * from I18N;
 
-insert into ITEM (ID_I18N, PRICE)
-values (13, 1);
+insert into ITEM (ID_I18N, PRICE) values (13, 1);
+
+UPDATE ITEM SET GTIN13 = '5000159461122' WHERE ID = 1;
+UPDATE ITEM SET GTIN13 = '7611612221139' WHERE ID = 2;
+UPDATE ITEM SET PRICE = -1 WHERE ID = 3;

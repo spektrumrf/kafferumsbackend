@@ -1,13 +1,11 @@
-
 package data;
 
+import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  *
@@ -15,6 +13,7 @@ import javax.persistence.Table;
  */
 @Table(name = "USER")
 public class UserData {
+
     @Id
     @GeneratedValue
     @Column(name = "ID")
@@ -26,9 +25,21 @@ public class UserData {
     @Column(name = "ID_LOGIN")
     public int loginId;
 
+    @Transient
+    public List<LedgerData> ledgers;
+
     @Override
     public String toString() {
         return "UserData{" + "id=" + id + ", name=" + name + ", groupId=" + groupId + ", loginId=" + loginId + '}';
     }
-    
+
+    public LedgerData getLedger(int ledgerId) {
+        for (LedgerData ledger : ledgers) {
+            if (ledger.id == ledgerId) {
+                return ledger;
+            }
+        }
+        return null;
+    }
+
 }
