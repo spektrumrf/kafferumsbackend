@@ -86,7 +86,7 @@ public class NormDataAccessObject extends DataAccessObject {
     }
 
     @Override
-    public <T extends Populatable> T populate(Populatable other) {
+    public <T extends Populatable> T populate(T other) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

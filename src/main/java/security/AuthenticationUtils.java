@@ -45,7 +45,7 @@ public class AuthenticationUtils {
             .withIssuer(ISSUER)
             .withIssuedAt(currentDate)
             .withExpiresAt(expiryDate)
-            .withSubject("" + userName)
+            .withSubject(userName)
             .sign(algorithm);
         return token;
     }

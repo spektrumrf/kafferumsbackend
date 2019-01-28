@@ -13,7 +13,7 @@ import javax.persistence.Transient;
  * @author Walter Grönholm
  */
 @Table(name = "LEDGER")
-public class LedgerData implements Populatable {
+public class LedgerData extends Populatable {
     @Id
     @GeneratedValue
     @Column(name = "ID")
@@ -34,6 +34,7 @@ public class LedgerData implements Populatable {
 
     @Override
     public LedgerData populated() {
-        return DataAccessObject.getInstance().populate(this);
+        return populator().populate(this);
     }
+    
 }

@@ -6,7 +6,7 @@ package data;
  */
 public interface Populator {
     
-    <T extends Populatable> T populate(Populatable other);
+    <T extends Populatable> T populate(T other);
 
     LedgerData populate(LedgerData ledger);
 }
