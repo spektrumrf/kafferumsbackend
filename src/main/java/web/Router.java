@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import spark.Filter;
 import spark.Route;
 import static spark.Spark.path;
+import static spark.Spark.staticFileLocation;
 import static spark.Spark.before;
 import static spark.Spark.port;
-import static spark.Spark.staticFileLocation;
 import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.post;
@@ -51,7 +51,7 @@ public class Router implements Runnable {
             path("/user", () -> {
                 post("/logout", UserController.logout);
                 post("/purchase", PurchaseController.purchase);
-                //get history
+                get("/ledger", LedgerController.get);
             });
             before("/admin/*", UserController.verifyAdmin);
             path("/admin", () -> {
