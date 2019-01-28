@@ -81,6 +81,11 @@ public class NormDataAccessObject extends DataAccessObject {
     }
 
     @Override
+    public List<LedgerData> getLedgers(int userId) {
+        return db.where("id_user=?", userId).results(LedgerData.class);
+    }
+
+    @Override
     public List<PurchaseData> getPurchases(int ledgerId) {
         return db.where("id_ledger=?", ledgerId).results(PurchaseData.class);
     }

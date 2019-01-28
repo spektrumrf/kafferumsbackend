@@ -17,6 +17,16 @@ import static spark.Spark.port;
 import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.post;
+import static spark.Spark.before;
+import static spark.Spark.port;
+import static spark.Spark.get;
+import static spark.Spark.options;
+import static spark.Spark.post;
+import static spark.Spark.before;
+import static spark.Spark.port;
+import static spark.Spark.get;
+import static spark.Spark.options;
+import static spark.Spark.post;
 
 /**
  *
@@ -49,9 +59,9 @@ public class Router implements Runnable {
         path("/api", () -> {
             before("/user/*", UserController.verifyLoggedIn);
             path("/user", () -> {
-                post("/logout", UserController.logout);
                 post("/purchase", PurchaseController.purchase);
-                get("/ledger", LedgerController.get);
+                get("/ledgers", LedgerController.getUserLedgers);
+                get("/ledger", LedgerController.getLedger);
             });
             before("/admin/*", UserController.verifyAdmin);
             path("/admin", () -> {

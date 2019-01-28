@@ -3,7 +3,6 @@ package web;
 import data.DataAccessObject;
 import data.UserData;
 import java.util.List;
-import java.util.Set;
 import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import spark.Filter;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import spark.Session;
 import spark.Spark;
 
 /**
@@ -78,18 +76,6 @@ class UserController {
         LoginResponse loginResponse = new LoginResponse(success, token);
         return JsonUtils.jsonResponse(loginResponse, LoginResponse.class, response);
     };
-
-    static final Route logout = (Request request, Response response) -> {
-        removeAllAttributes(request.session());
-        return null;
-    };
-
-    private static void removeAllAttributes(Session session) {
-        Set<String> attributes = session.attributes();
-        for (String attribute : attributes) {
-            session.removeAttribute(attribute);
-        }
-    }
 
     static final Filter verifyLoggedIn = (Request request, Response response) -> {
         String token = request.queryParams("token");

@@ -7,6 +7,8 @@ import java.util.List;
  * @author Walter Grönholm
  */
 public interface LedgerDAO {
+    
+    List<LedgerData> getLedgers(int userId);
 
     LedgerData getLedger(int ledgerId);
     
