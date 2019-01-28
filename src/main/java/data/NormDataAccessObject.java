@@ -56,10 +56,16 @@ public class NormDataAccessObject extends DataAccessObject {
     }
 
     @Override
+    public UserData getUserData(int userId) {
+        return db.where("id=?", userId).first(UserData.class);
+    }
+
+
+    @Override
     public void addPurchase(int ledgerId, PurchaseData purchaseData) {
         Transaction transation = db.startTransaction();
         db.transaction(transation).insert(purchaseData).execute();
-        for (PurchaseData.Item item : purchaseData.purchaseItems) {
+        for (PurchaseData.Item item : purchaseData.getPurchaseItems()) {
             db.transaction(transation).sql(
                 "INSERT INTO PURCHASEITEM VALUES (?, ?, ?, ?)",
                 purchaseData.id,
@@ -70,5 +76,4 @@ public class NormDataAccessObject extends DataAccessObject {
         }
         transation.commit();
     }
-
 }

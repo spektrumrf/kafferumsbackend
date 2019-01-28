@@ -51,6 +51,7 @@ public class Configuration {
     private static final String WEBAPP = "webapp";
     private static final String FORM = "form";
     private static final String LEDGER = "ledger";
+    private static final String AUTHENTICATION = "auth";
     
     public static String dataFilePath() {
         return CONFIG.ini.get(FORM, "file");
@@ -100,6 +101,10 @@ public class Configuration {
         return CONFIG.ini.get(LEDGER, "minimumBalanceCents", int.class);
     }
 
+    public static int tokenExpirySeconds() {
+        return CONFIG.ini.get(AUTHENTICATION, "tokenExpiryTimeSeconds", int.class);
+    }
+
     private static class TypedEntry<T> {
 
         private final String section;
@@ -132,6 +137,7 @@ public class Configuration {
         entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", int.class));
         entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", int.class));
         entrySet.add(new TypedEntry(LEDGER, "minimumBalanceCents", int.class));
+        entrySet.add(new TypedEntry(AUTHENTICATION, "tokenExpiryTimeSeconds", int.class));
         return entrySet;
     }
 

@@ -15,6 +15,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import static spark.Spark.halt;
+import static spark.Spark.halt;
 
 /**
  * Handles Inventory update forms

@@ -18,4 +18,6 @@ public interface UserDAO {
     
     public UserData getUserData(String userName);
 
+    public UserData getUserData(int userId);
+
 }

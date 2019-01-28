@@ -1,6 +1,7 @@
 package data;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,15 @@ public class PurchaseData {
     public int total;
     
     @Transient
-    public List<PurchaseData.Item> purchaseItems;
+    private List<Item> purchaseItems = new ArrayList<>();
+
+    Iterable<Item> getPurchaseItems() {
+        return purchaseItems;
+    }
+
+    public void addPurchaseItem(Item item) {
+        purchaseItems.add(item);
+    }
     
     public static class Item {
         public ItemData itemData;

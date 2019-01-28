@@ -79,7 +79,6 @@ public class PurchaseController {
         PurchaseData purchaseData = new PurchaseData();
         purchaseData.ledgerId = purchaseJsonData.ledgerId;
         purchaseData.timestamp = getCurrentTimestamp();
-        purchaseData.purchaseItems = new ArrayList<>(purchaseJsonData.items.size());
         Map<Integer, ItemData> itemIdMap = null;
         int purchaseTotal = 0;
         for (PurchaseItemJsonData itemJsonData : purchaseJsonData.items) {
@@ -87,7 +86,7 @@ public class PurchaseController {
             item.itemData = itemIdMap.get(itemJsonData.itemId);
             item.amount = itemJsonData.amount;
             item.price = item.itemData.price;
-            purchaseData.purchaseItems.add(item);
+            purchaseData.addPurchaseItem(item);
             purchaseTotal += item.amount * item.price;
         }
         purchaseData.total = purchaseTotal;

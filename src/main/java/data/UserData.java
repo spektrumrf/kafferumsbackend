@@ -25,16 +25,20 @@ public class UserData {
     @Column(name = "ID_LOGIN")
     public int loginId;
 
+    private List<LedgerData> ledgers;
+    
     @Transient
-    public List<LedgerData> ledgers;
+    public List<LedgerData> getLedgers() {
+        return ledgers;
+    }
 
-    @Override
-    public String toString() {
-        return "UserData{" + "id=" + id + ", name=" + name + ", groupId=" + groupId + ", loginId=" + loginId + '}';
+    @Transient
+    public boolean isAdmin() {
+        return groupId == 2;
     }
 
     public LedgerData getLedger(int ledgerId) {
-        for (LedgerData ledger : ledgers) {
+        for (LedgerData ledger : getLedgers()) {
             if (ledger.id == ledgerId) {
                 return ledger;
             }
@@ -42,4 +46,8 @@ public class UserData {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "UserData{" + "id=" + id + ", name=" + name + ", groupId=" + groupId + ", loginId=" + loginId + '}';
+    }
 }

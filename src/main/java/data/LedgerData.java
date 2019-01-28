@@ -21,7 +21,7 @@ public class LedgerData {
     public int userId;
     
     @Transient
-    public List<PurchaseData> purchases;
+    private List<PurchaseData> purchases;
     
     public int balance() {
         return purchases.stream().map((purchase) -> purchase.total).reduce(0, Integer::sum);

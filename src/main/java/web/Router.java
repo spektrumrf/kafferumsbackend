@@ -3,12 +3,17 @@ package web;
 import config.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import spark.Filter;
 import spark.Route;
-import spark.Spark;
 import static spark.Spark.path;
 import static spark.Spark.before;
 import static spark.Spark.port;
 import static spark.Spark.staticFileLocation;
+import static spark.Spark.get;
+import static spark.Spark.options;
+import static spark.Spark.post;
+import static spark.Spark.before;
+import static spark.Spark.port;
 import static spark.Spark.get;
 import static spark.Spark.options;
 import static spark.Spark.post;
@@ -25,9 +30,13 @@ public class Router implements Runnable {
         String origin = request.headers("ORIGIN");
         response.header("Access-Control-Allow-Origin", origin);
         response.header("Access-Control-Allow-Methods", "POST");
-        response.header("Access-Control-Allow-Headers", "accept, content-type");
+        response.header("Access-Control-Allow-Headers", "Accept, Content-Type");
         response.header("Access-Control-Max-Age", "1728000");
         return "true";
+    };
+    
+    private static final Filter logRequest = (request, response) -> {
+        LOG.info("Received " + request.requestMethod() + " call to " + request.uri());
     };
 
     @Override
@@ -36,12 +45,11 @@ public class Router implements Runnable {
         port(Configuration.port());
         post(Configuration.inventoryFormPath(), InventoryFormController.handlePost());
 
-        before("/*", (req, res) -> LOG.info("Received " + req.requestMethod() + " call to " + req.uri()));
+        before("/*", logRequest);
         path("/api", () -> {
             before("/user/*", UserController.verifyLoggedIn);
             path("/user", () -> {
-                get("/logout", UserController.logout);
-                options("/purchase", approveJsonPost);
+                post("/logout", UserController.logout);
                 post("/purchase", PurchaseController.purchase);
                 //get history
             });
@@ -50,9 +58,9 @@ public class Router implements Runnable {
                 //TODO add stuff here
             });
             get("/names", UserController.getUserNames);
-            options("/pin", approveJsonPost);
             post("/pin", UserController.verifyPIN);
         });
+        options("/*", approveJsonPost);
 
         LOG.info("Break room listener is listening on :" + Configuration.port());
     }

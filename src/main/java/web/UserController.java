@@ -7,6 +7,7 @@ import java.util.Set;
 import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import security.AuthenticationUtils;
 import security.PasswordUtils;
 import spark.Filter;
 import spark.Request;
@@ -32,14 +33,25 @@ class UserController {
         return JsonUtils.jsonResponse(userNames, List.class, response);
     };
 
-    private static class LoginAttempt {
+    private static class LoginRequest {
 
         public String pin;
         public String userName;
     }
 
+    private static class LoginResponse {
+
+        private LoginResponse(boolean success, String token) {
+            this.success = success;
+            this.token = token;
+        }
+
+        public boolean success;
+        public String token;
+    }
+
     static final Route verifyPIN = (Request request, Response response) -> {
-        LoginAttempt attempt = JsonUtils.getGson().fromJson(request.body(), LoginAttempt.class);
+        LoginRequest attempt = JsonUtils.getGson().fromJson(request.body(), LoginRequest.class);
 
         String pin = attempt.pin;
         String userName = attempt.userName;
@@ -58,17 +70,18 @@ class UserController {
 
         DataAccessObject.getInstance().setLoginAttempts(userName, failedAttempts);
 
+        String token = null;
         if (success) {
-            UserData userData = DataAccessObject.getInstance().getUserData(userName);
-            request.session(true).attribute(USER, userData);
+            token = AuthenticationUtils.tokenize(userName);
+        } else {
+            Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
         }
-
-        Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
-        return JsonUtils.jsonResponse(success, Boolean.class, response);
+        LoginResponse loginResponse = new LoginResponse(success, token);
+        return JsonUtils.jsonResponse(loginResponse, LoginResponse.class, response);
     };
 
     static final Route logout = (Request request, Response response) -> {
-        removeAllAttributes(request.session(true));
+        removeAllAttributes(request.session());
         return null;
     };
 
@@ -78,21 +91,17 @@ class UserController {
             session.removeAttribute(attribute);
         }
     }
-    
+
     static final Filter verifyLoggedIn = (Request request, Response response) -> {
-        UserData userData = (UserData) request.session(true).attribute(USER);
-        if (userData == null) {
-            Spark.halt(401, "You are not worthy!");
-        }
+        String token = request.queryParams("token");
+        AuthenticationUtils.verifyAndDetokenize(token);
     };
 
     static final Filter verifyAdmin = (Request request, Response response) -> {
-        UserData userData = (UserData) request.session(true).attribute(USER);
-        if (userData == null) {
-            Spark.halt(401, "You are not worthy!");
-        }
-        boolean isAdmin = true; //TODO: check userData.groupId
-        if (!isAdmin) {
+        String token = request.queryParams("token");
+        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        if (!userData.isAdmin()) {
+            LOG.info(request.ip() + " tried to access admin page without proper authorization");
             Spark.halt(401, "You are not worthy!");
         }
     };
