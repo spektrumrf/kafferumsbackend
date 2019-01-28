@@ -1,5 +1,6 @@
 package data;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -25,25 +26,9 @@ public class UserData {
     @Column(name = "ID_LOGIN")
     public int loginId;
 
-    private List<LedgerData> ledgers;
-    
-    @Transient
-    public List<LedgerData> getLedgers() {
-        return ledgers;
-    }
-
     @Transient
     public boolean isAdmin() {
         return groupId == 2;
-    }
-
-    public LedgerData getLedger(int ledgerId) {
-        for (LedgerData ledger : getLedgers()) {
-            if (ledger.id == ledgerId) {
-                return ledger;
-            }
-        }
-        return null;
     }
 
     @Override

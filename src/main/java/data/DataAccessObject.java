@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Walter Grönholm
  */
-public abstract class DataAccessObject implements UserDAO, LedgerDAO {
+public abstract class DataAccessObject implements UserDAO, LedgerDAO, ItemDAO, Populator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessObject.class);
 
@@ -27,5 +27,6 @@ public abstract class DataAccessObject implements UserDAO, LedgerDAO {
         LOG.info("Database connection established");
     }
 
-    abstract void testConnection(int timeout);
+    abstract protected void testConnection(int timeout);
+
 }

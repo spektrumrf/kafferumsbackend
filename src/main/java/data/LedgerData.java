@@ -1,5 +1,6 @@
 package data;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,7 @@ import javax.persistence.Transient;
  * @author Walter Grönholm
  */
 @Table(name = "LEDGER")
-public class LedgerData {
+public class LedgerData implements Populatable {
     @Id
     @GeneratedValue
     @Column(name = "ID")
@@ -20,10 +21,19 @@ public class LedgerData {
     @Column(name = "ID_USER")
     public int userId;
     
+    private final List<PurchaseData> purchases = new ArrayList<>();
+
     @Transient
-    private List<PurchaseData> purchases;
+    public List<PurchaseData> getPurchases() {
+        return purchases;
+    }
     
     public int balance() {
-        return purchases.stream().map((purchase) -> purchase.total).reduce(0, Integer::sum);
+        return getPurchases().stream().map((purchase) -> purchase.total).reduce(0, Integer::sum);
+    }
+
+    @Override
+    public LedgerData populated() {
+        return DataAccessObject.getInstance().populate(this);
     }
 }

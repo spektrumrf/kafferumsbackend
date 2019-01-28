@@ -3,11 +3,13 @@ package data;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author Walter Grönholm
  */
+@Table(name = "ITEM")
 public class ItemData {
     @Id
     @GeneratedValue

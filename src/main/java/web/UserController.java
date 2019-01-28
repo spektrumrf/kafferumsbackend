@@ -26,7 +26,6 @@ class UserController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private static final double INCREMENTAL_TIMEOUT = 1200.0;
-    static final String USER = "user";
 
     static final Route getUserNames = (Request request, Response response) -> {
         List<String> userNames = DataAccessObject.getInstance().getUserNames();

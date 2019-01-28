@@ -2,7 +2,9 @@ package data;
 
 import com.dieselpoint.norm.Transaction;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -21,15 +23,16 @@ public class NormDataAccessObject extends DataAccessObject {
     }
 
     @Override
-    void testConnection(int timeout) {
+    protected void testConnection(int timeout) {
         try {
-            if (!db.getConnection().isValid(timeout))
+            if (!db.getConnection().isValid(timeout)) {
                 throw new IllegalStateException("Connection to database is either closed or invalid");
+            }
         } catch (SQLException ex) {
             throw new IllegalArgumentException(ex);
         }
     }
-    
+
     @Override
     public List<String> getUserNames() {
         return db.sql("SELECT NAME FROM USER").results(String.class);
@@ -60,20 +63,47 @@ public class NormDataAccessObject extends DataAccessObject {
         return db.where("id=?", userId).first(UserData.class);
     }
 
-
     @Override
     public void addPurchase(int ledgerId, PurchaseData purchaseData) {
-        Transaction transation = db.startTransaction();
-        db.transaction(transation).insert(purchaseData).execute();
-        for (PurchaseData.Item item : purchaseData.getPurchaseItems()) {
-            db.transaction(transation).sql(
-                "INSERT INTO PURCHASEITEM VALUES (?, ?, ?, ?)",
-                purchaseData.id,
-                item.itemData.id,
-                item.amount,
-                item.price
-            ).execute();
+        Transaction transaction = db.startTransaction();
+        db.transaction(transaction).insert(purchaseData);
+        for (PurchaseItemData item : purchaseData.getPurchaseItems()) {
+            item.purchaseId = purchaseData.id;
+            item.itemId = item.itemData.id;
+            db.transaction(transaction).insert(item);
         }
-        transation.commit();
+        transaction.commit();
+    }
+
+    @Override
+    public LedgerData getLedger(int ledgerId) {
+        return db.where("id=?", ledgerId).first(LedgerData.class);
+    }
+
+    @Override
+    public List<PurchaseData> getPurchases(int ledgerId) {
+        return db.where("id_ledger=?", ledgerId).results(PurchaseData.class);
+    }
+
+    @Override
+    public <T extends Populatable> T populate(Populatable other) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public LedgerData populate(LedgerData ledger) {
+        List<PurchaseData> purchases = DataAccessObject.getInstance().getPurchases(ledger.id);
+        ledger.getPurchases().addAll(purchases);
+        return ledger;
+    }
+
+    @Override
+    public Map<Integer, ItemData> getItemIdMap() {
+        List<ItemData> items = db.results(ItemData.class);
+        Map<Integer, ItemData> map = new HashMap<>();
+        items.stream().forEach((item) -> {
+            map.put(item.id, item);
+        });
+        return map;
     }
 }

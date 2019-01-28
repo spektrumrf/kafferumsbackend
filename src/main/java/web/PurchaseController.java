@@ -5,18 +5,19 @@ import data.DataAccessObject;
 import data.ItemData;
 import data.LedgerData;
 import data.PurchaseData;
+import data.PurchaseItemData;
 import data.UserData;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import json.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import security.AuthenticationUtils;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import static web.UserController.USER;
+import validation.Validate;
 
 /**
  * Handles purchase POSTs.
@@ -48,13 +49,19 @@ public class PurchaseController {
 
     static Route purchase = (Request request, Response response) -> {
         PurchaseJsonData purchaseData = JsonUtils.getGson().fromJson(request.body(), PurchaseJsonData.class);
-
-        PurchaseResult result = tryPurchasing((UserData) request.attribute(USER), purchaseData);
+        String token = request.queryParams("token");
+        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        
+        PurchaseResult result = tryPurchasing(userData, purchaseData);
         return JsonUtils.jsonResponse(result, PurchaseResult.class, response);
     };
 
     private static PurchaseResult tryPurchasing(UserData userData, PurchaseJsonData purchaseJsonData) {
-        LedgerData ledger = userData.getLedger(purchaseJsonData.ledgerId);
+        Validate.notNull("userData", userData);
+        Validate.notNull("purchaseJsonData", purchaseJsonData);
+        LedgerData ledger = DataAccessObject.getInstance()
+            .getLedger(purchaseJsonData.ledgerId)
+            .populated();
         if (ledger == null) {
             LOG.error("Ledger did not belong to user");
             return PurchaseResult.INVALID_LEDGER;
@@ -79,10 +86,10 @@ public class PurchaseController {
         PurchaseData purchaseData = new PurchaseData();
         purchaseData.ledgerId = purchaseJsonData.ledgerId;
         purchaseData.timestamp = getCurrentTimestamp();
-        Map<Integer, ItemData> itemIdMap = null;
+        Map<Integer, ItemData> itemIdMap = DataAccessObject.getInstance().getItemIdMap(); //call from db
         int purchaseTotal = 0;
         for (PurchaseItemJsonData itemJsonData : purchaseJsonData.items) {
-            PurchaseData.Item item = new PurchaseData.Item();
+            PurchaseItemData item = new PurchaseItemData();
             item.itemData = itemIdMap.get(itemJsonData.itemId);
             item.amount = itemJsonData.amount;
             item.price = item.itemData.price;

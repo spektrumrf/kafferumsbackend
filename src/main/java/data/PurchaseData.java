@@ -23,23 +23,17 @@ public class PurchaseData {
     public int ledgerId;
     @Column(name = "TIMESTAMP")
     public Timestamp timestamp;
-    @Column(name = "PRICE")
+    @Column(name = "TOTAL")
     public int total;
     
     @Transient
-    private List<Item> purchaseItems = new ArrayList<>();
+    private List<PurchaseItemData> purchaseItems = new ArrayList<>();
 
-    Iterable<Item> getPurchaseItems() {
+    Iterable<PurchaseItemData> getPurchaseItems() {
         return purchaseItems;
     }
 
-    public void addPurchaseItem(Item item) {
+    public void addPurchaseItem(PurchaseItemData item) {
         purchaseItems.add(item);
-    }
-    
-    public static class Item {
-        public ItemData itemData;
-        public int amount;
-        public int price;
     }
 }
