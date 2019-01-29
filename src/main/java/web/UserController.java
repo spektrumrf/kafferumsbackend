@@ -1,6 +1,7 @@
 package web;
 
 import data.DataAccessObject;
+import data.LedgerData;
 import data.UserData;
 import java.util.List;
 import json.JsonUtils;
@@ -38,13 +39,15 @@ class UserController {
 
     private static class LoginResponse {
 
-        private LoginResponse(boolean success, String token) {
+        private LoginResponse(boolean success, String token, Integer ledgerId) {
             this.success = success;
             this.token = token;
+            this.ledgerId = ledgerId;
         }
 
         public boolean success;
         public String token;
+        public Integer ledgerId;
     }
 
     static final Route verifyPIN = (Request request, Response response) -> {
@@ -67,13 +70,13 @@ class UserController {
 
         DataAccessObject.getInstance().setLoginAttempts(userName, failedAttempts);
 
-        String token = null;
-        if (success) {
-            token = AuthenticationUtils.tokenize(userName);
-        } else {
-            Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
-        }
-        LoginResponse loginResponse = new LoginResponse(success, token);
+        String token = success ? AuthenticationUtils.tokenize(userName) : null;
+        LedgerData latestLedger = success ? DataAccessObject.getInstance().getLatestLedger(userName) : null;
+        Integer latestLedgerId = latestLedger != null ? latestLedger.id : null;
+
+        Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
+        
+        LoginResponse loginResponse = new LoginResponse(success, token, latestLedgerId);
         return JsonUtils.jsonResponse(loginResponse, LoginResponse.class, response);
     };
 

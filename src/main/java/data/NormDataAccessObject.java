@@ -84,6 +84,26 @@ public class NormDataAccessObject extends DataAccessObject {
     public List<LedgerData> getLedgers(int userId) {
         return db.where("id_user=?", userId).results(LedgerData.class);
     }
+    
+    @Override
+    public LedgerData getLatestLedger(String userName) {
+        UserData user = getUserData(userName);
+        return getLatestLedger(user.id);
+    }
+
+    private LedgerData getLatestLedger(int userId) {
+        LedgerData ledger = db.sql(
+            "SELECT LEDGER.* FROM LEDGER "
+            + "JOIN PURCHASE ON LEDGER.ID = PURCHASE.ID_LEDGER "
+            + "WHERE LEDGER.ID_USER = ? ORDER BY PURCHASE.TIMESTAMP DESC",
+            userId
+        ).first(LedgerData.class);
+        if (ledger != null) {
+            return ledger;
+        }
+        return db.sql("SELECT * FROM LEDGER WHERE ID_USER = ?", userId)
+            .first(LedgerData.class);
+    }
 
     @Override
     public List<PurchaseData> getPurchases(int ledgerId) {

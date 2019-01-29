@@ -15,4 +15,6 @@ public interface LedgerDAO {
     List<PurchaseData> getPurchases(int ledgerId);
 
     void addPurchase(int ledgerId, PurchaseData purchaseData);
+    
+    LedgerData getLatestLedger(String userName);
 }
