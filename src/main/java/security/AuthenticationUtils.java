@@ -51,16 +51,16 @@ public class AuthenticationUtils {
     }
 
     /**
-     * First decodes the token, then verifies its signature, lastly the user
-     * data is fetched.
+     * First decodes the token, then verifies its signature and returns the user
+     * name.
      */
-    public static UserData verifyAndDetokenize(String token) throws JWTVerificationException {
+    public static String verifyAndDetokenize(String token) throws JWTVerificationException {
         JWTVerifier verifier = JWT.require(getAlgorithm())
             .withIssuer(ISSUER)
             .build();
         DecodedJWT jwt = verifier.verify(token);
         String userName = jwt.getSubject();
-        return DataAccessObject.getInstance().getUserData(userName);
+        return userName;
     }
 
 }

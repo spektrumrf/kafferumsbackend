@@ -48,7 +48,7 @@ class UserController {
     }
 
     static final Route verifyPIN = (Request request, Response response) -> {
-        LoginRequest attempt = JsonUtils.getGson().fromJson(request.body(), LoginRequest.class);
+        LoginRequest attempt = JsonUtils.GSON.fromJson(request.body(), LoginRequest.class);
 
         String pin = attempt.pin;
         String userName = attempt.userName;
@@ -84,7 +84,8 @@ class UserController {
 
     static final Filter verifyAdmin = (Request request, Response response) -> {
         String token = request.queryParams("token");
-        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        String userName = AuthenticationUtils.verifyAndDetokenize(token);
+        UserData userData = DataAccessObject.getInstance().getUserData(userName);
         if (!userData.isAdmin()) {
             LOG.info(request.ip() + " tried to access admin page without proper authorization");
             Spark.halt(401, "You are not worthy!");

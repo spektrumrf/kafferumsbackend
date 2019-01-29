@@ -15,7 +15,6 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import static spark.Spark.halt;
-import static spark.Spark.halt;
 
 /**
  * Handles Inventory update forms
@@ -31,14 +30,14 @@ class InventoryFormController {
             LOG.info("Recieved new message");
             Map<String, String[]> map = request.queryMap().toMap();
             InventoryFormData data = new InventoryFormData(map);
-            List<InventoryFormData> allData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.getGson()).load();
+            List<InventoryFormData> allData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.GSON).load();
             if (allData == null) {
                 allData = new ArrayList<>();
                 allData.add(data);
-                new DataFileSaver(Configuration.dataFilePath()+'.'+System.currentTimeMillis(), JsonUtils.getGson()).save(allData);
+                new DataFileSaver(Configuration.dataFilePath()+'.'+System.currentTimeMillis(), JsonUtils.GSON).save(allData);
             } else {
                 allData.add(data);
-                new DataFileSaver(Configuration.dataFilePath(), JsonUtils.getGson()).save(allData);
+                new DataFileSaver(Configuration.dataFilePath(), JsonUtils.GSON).save(allData);
             }
             response.redirect("http://www.spektrum.fi/kafferummet");
             halt();

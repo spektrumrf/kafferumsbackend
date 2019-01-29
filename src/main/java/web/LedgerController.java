@@ -23,25 +23,22 @@ public class LedgerController {
     
     static final Route getUserLedgers = (Request request, Response response) -> {
         String token = request.queryParams("token");
-        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        String userName = AuthenticationUtils.verifyAndDetokenize(token);
+        UserData userData = DataAccessObject.getInstance().getUserData(userName);
         List<LedgerData> data = DataAccessObject.getInstance().getLedgers(userData.id);
-        String string = "";
-        for (LedgerData ledgerData : data) {
-            string += ledgerData.id + ", ";
-        }
-        System.out.println(string);
         return JsonUtils.jsonResponse(data, LedgerListType, response);
     };
 
     static final Route getLedger = (Request request, Response response) -> {
         String token = request.queryParams("token");
-        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        String userName = AuthenticationUtils.verifyAndDetokenize(token);
+        UserData userData = DataAccessObject.getInstance().getUserData(userName);
         int ledgerId = Integer.parseInt(request.queryParams("id"));
-        LedgerData data = DataAccessObject.getInstance().getLedger(ledgerId);
-        if (userData.id != data.userId && !userData.isAdmin()) {
+        LedgerData ledger = DataAccessObject.getInstance().getLedger(ledgerId);
+        if (userData.id != ledger.userId && !userData.isAdmin()) {
             halt(401, "Access denied");
         }
-        data = data.populated();
-        return JsonUtils.jsonResponse(data, LedgerData.class, response);
+        ledger = ledger.populated();
+        return JsonUtils.jsonResponse(ledger, LedgerData.class, response);
     };
 }

@@ -48,9 +48,10 @@ public class PurchaseController {
     }
 
     static Route purchase = (Request request, Response response) -> {
-        PurchaseJsonData purchaseData = JsonUtils.getGson().fromJson(request.body(), PurchaseJsonData.class);
+        PurchaseJsonData purchaseData = JsonUtils.GSON.fromJson(request.body(), PurchaseJsonData.class);
         String token = request.queryParams("token");
-        UserData userData = AuthenticationUtils.verifyAndDetokenize(token);
+        String userName = AuthenticationUtils.verifyAndDetokenize(token);
+        UserData userData = DataAccessObject.getInstance().getUserData(userName);
         
         PurchaseResult result = tryPurchasing(userData, purchaseData);
         return JsonUtils.jsonResponse(result, PurchaseResult.class, response);
@@ -60,14 +61,18 @@ public class PurchaseController {
         Validate.notNull("userData", userData);
         Validate.notNull("purchaseJsonData", purchaseJsonData);
         LedgerData ledger = DataAccessObject.getInstance()
-            .getLedger(purchaseJsonData.ledgerId)
-            .populated();
+            .getLedger(purchaseJsonData.ledgerId);
         if (ledger == null) {
-            LOG.error("Ledger did not belong to user");
+            LOG.error("Could not find ledger with id " + purchaseJsonData.ledgerId);
+            return PurchaseResult.INVALID_LEDGER;
+        }
+        if (ledger.userId != userData.id) {
+            LOG.error("Ledger did not belong to the user");
             return PurchaseResult.INVALID_LEDGER;
         }
         PurchaseData purchaseData = convertPurchaseData(purchaseJsonData);
         try {
+            ledger = ledger.populated();
             if (ledger.balance() - purchaseData.total > Configuration.ledgerMinimumBalance()) {
                 authorizePurchase(ledger, purchaseData);
                 LOG.info("Purchase success");

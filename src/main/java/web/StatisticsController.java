@@ -24,7 +24,7 @@ class StatisticsController {
     static Route handleGet() {
         return (Request request, Response response) -> {
             LOG.debug("Returning statistics");
-            List<InventoryFormData> inputData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.getGson()).load();
+            List<InventoryFormData> inputData = new DataFileLoader(Configuration.dataFilePath(), JsonUtils.GSON).load();
             if (inputData == null) {
                 throw new NullPointerException("inputData is null");
             }
