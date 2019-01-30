@@ -60,8 +60,7 @@ public class PurchaseController {
     private static PurchaseResult tryPurchasing(UserData userData, PurchaseJsonData purchaseJsonData) {
         Validate.notNull("userData", userData);
         Validate.notNull("purchaseJsonData", purchaseJsonData);
-        LedgerData ledger = DataAccessObject.getInstance()
-            .getLedger(purchaseJsonData.ledgerId);
+        LedgerData ledger = DataAccessObject.getInstance().getLedger(purchaseJsonData.ledgerId);
         if (ledger == null) {
             LOG.error("Could not find ledger with id " + purchaseJsonData.ledgerId);
             return PurchaseResult.INVALID_LEDGER;
@@ -73,7 +72,7 @@ public class PurchaseController {
         PurchaseData purchaseData = convertPurchaseData(purchaseJsonData);
         try {
             ledger = ledger.populated();
-            if (ledger.balance() - purchaseData.total > Configuration.ledgerMinimumBalance()) {
+            if (- (ledger.balance() + purchaseData.total) > Configuration.ledgerMinimumBalance()) {
                 authorizePurchase(ledger, purchaseData);
                 LOG.info("Purchase success");
                 return PurchaseResult.SUCCESS;
