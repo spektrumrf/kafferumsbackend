@@ -48,15 +48,19 @@ public class LedgerController {
 
             int previousDay = -1;
             int dayTotal = 0;
+            Timestamp timestamp = null;
             for (PurchaseData purchase : purchases) {
+                timestamp = purchase.timestamp;
                 int day = getDay(purchase.timestamp);
                 if (day != previousDay) {
-                    response.rows.add(Pair.of(formatDate(purchase.timestamp), dayTotal));
+                    response.rows.add(Pair.of(formatDate(timestamp), dayTotal));
                     previousDay = day;
                     dayTotal = 0;
                 }
                 dayTotal += purchase.total;
             }
+            if (timestamp != null)
+                response.rows.add(Pair.of(formatDate(timestamp), dayTotal));
             if (!response.rows.isEmpty())
                 response.rows.remove(0);
             return response;
