@@ -7,8 +7,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import config.Configuration;
-import data.DataAccessObject;
-import data.UserData;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;

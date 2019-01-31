@@ -100,6 +100,10 @@ public class Configuration {
     public static int ledgerMinimumBalance() {
         return CONFIG.ini.get(LEDGER, "minimumBalanceCents", int.class);
     }
+    
+    public static int inventoryLedgerId() {
+        return CONFIG.ini.get(LEDGER, "inventoryLedgerId", int.class);
+    }
 
     public static int tokenExpirySeconds() {
         return CONFIG.ini.get(AUTHENTICATION, "tokenExpiryTimeSeconds", int.class);
@@ -129,15 +133,16 @@ public class Configuration {
         entrySet.add(new TypedEntry(DATABASE, "url", String.class));
         entrySet.add(new TypedEntry(DATABASE, "user", String.class));
         entrySet.add(new TypedEntry(DATABASE, "pass", String.class));
-        entrySet.add(new TypedEntry(DATABASE, "timeoutMillis", int.class));
-        entrySet.add(new TypedEntry(WEBAPP, "port", int.class));
+        entrySet.add(new TypedEntry(DATABASE, "timeoutMillis", Integer.class));
+        entrySet.add(new TypedEntry(WEBAPP, "port", Integer.class));
         entrySet.add(new TypedEntry(WEBAPP, "inventoryFormPath", String.class));
         entrySet.add(new TypedEntry(WEBAPP, "statisticsGraphPath", String.class));
-        entrySet.add(new TypedEntry(FORM, "maxSize", int.class));
-        entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", int.class));
-        entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", int.class));
-        entrySet.add(new TypedEntry(LEDGER, "minimumBalanceCents", int.class));
-        entrySet.add(new TypedEntry(AUTHENTICATION, "tokenExpiryTimeSeconds", int.class));
+        entrySet.add(new TypedEntry(FORM, "maxSize", Integer.class));
+        entrySet.add(new TypedEntry(FORM, "feedbackWarningSize", Integer.class));
+        entrySet.add(new TypedEntry(FORM, "feedbackMaxSize", Integer.class));
+        entrySet.add(new TypedEntry(LEDGER, "minimumBalanceCents", Integer.class));
+        entrySet.add(new TypedEntry(LEDGER, "inventoryLedgerId", Integer.class));
+        entrySet.add(new TypedEntry(AUTHENTICATION, "tokenExpiryTimeSeconds", Integer.class));
         return entrySet;
     }
 

@@ -57,7 +57,8 @@ public class LedgerController {
                 }
                 dayTotal += purchase.total;
             }
-            response.rows.remove(0);
+            if (!response.rows.isEmpty())
+                response.rows.remove(0);
             return response;
         }
 

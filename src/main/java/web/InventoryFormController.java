@@ -1,6 +1,5 @@
 package web;
 
-
 import config.Configuration;
 import data.InventoryFormData;
 import files.DataFileLoader;
