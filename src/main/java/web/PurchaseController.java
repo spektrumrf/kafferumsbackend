@@ -1,7 +1,7 @@
 package web;
 
 import config.Configuration;
-import data.DataAccessObject;
+import data.Access;
 import data.ItemData;
 import data.LedgerData;
 import data.PurchaseData;
@@ -51,7 +51,7 @@ public class PurchaseController {
         PurchaseJsonData purchaseData = JsonUtils.GSON.fromJson(request.body(), PurchaseJsonData.class);
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = DataAccessObject.getInstance().getUserData(userName);
+        UserData userData = Access.getInstance().getUserData(userName);
         
         PurchaseResult result = tryPurchasing(userData, purchaseData);
         return JsonUtils.jsonResponse(result, PurchaseResult.class, response);
@@ -60,7 +60,7 @@ public class PurchaseController {
     private static PurchaseResult tryPurchasing(UserData userData, PurchaseJsonData purchaseJsonData) {
         Validate.notNull("userData", userData);
         Validate.notNull("purchaseJsonData", purchaseJsonData);
-        LedgerData ledger = DataAccessObject.getInstance().getLedger(purchaseJsonData.ledgerId);
+        LedgerData ledger = Access.getInstance().getLedger(purchaseJsonData.ledgerId);
         if (ledger == null) {
             LOG.error("Could not find ledger with id " + purchaseJsonData.ledgerId);
             return PurchaseResult.INVALID_LEDGER;
@@ -90,7 +90,7 @@ public class PurchaseController {
         PurchaseData purchaseData = new PurchaseData();
         purchaseData.ledgerId = purchaseJsonData.ledgerId;
         purchaseData.timestamp = getCurrentTimestamp();
-        Map<Integer, ItemData> itemIdMap = DataAccessObject.getInstance().getItemIdMap(); //call from db
+        Map<Integer, ItemData> itemIdMap = Access.getInstance().getItemIdMap(); //call from db
         int purchaseTotal = 0;
         for (PurchaseItemJsonData itemJsonData : purchaseJsonData.items) {
             PurchaseItemData item = new PurchaseItemData();
@@ -109,7 +109,7 @@ public class PurchaseController {
     }
 
     private static void authorizePurchase(LedgerData ledgerData, PurchaseData purchaseData) {
-        DataAccessObject.getInstance().addPurchase(ledgerData.id, purchaseData);
+        Access.getInstance().addPurchase(ledgerData.id, purchaseData);
     }
 
 }

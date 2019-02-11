@@ -1,7 +1,7 @@
 package web;
 
 import com.google.gson.reflect.TypeToken;
-import data.DataAccessObject;
+import data.Access;
 import data.LedgerData;
 import data.PurchaseData;
 import data.UserData;
@@ -17,6 +17,7 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import static spark.Spark.halt;
+import static spark.Spark.halt;
 
 /**
  * Handles ledger history GETs.
@@ -31,8 +32,8 @@ public class LedgerController {
     static final Route getUserLedgers = (Request request, Response response) -> {
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = DataAccessObject.getInstance().getUserData(userName);
-        List<LedgerData> data = DataAccessObject.getInstance().getLedgers(userData.id);
+        UserData userData = Access.getInstance().getUserData(userName);
+        List<LedgerData> data = Access.getInstance().getLedgers(userData.id);
         return JsonUtils.jsonResponse(data, LedgerListType, response);
     };
 
@@ -79,9 +80,9 @@ public class LedgerController {
     static final Route getLedger = (Request request, Response response) -> {
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = DataAccessObject.getInstance().getUserData(userName);
+        UserData userData = Access.getInstance().getUserData(userName);
         int ledgerId = Integer.parseInt(request.queryParams("id"));
-        LedgerData ledger = DataAccessObject.getInstance().getLedger(ledgerId);
+        LedgerData ledger = Access.getInstance().getLedger(ledgerId);
         if (userData.id != ledger.userId && !userData.isAdmin()) {
             halt(401, "Access denied");
         }

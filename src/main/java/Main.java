@@ -1,6 +1,6 @@
 
 import config.Configuration;
-import data.DataAccessObject;
+import data.Access;
 import java.io.IOException;
 import web.Router;
 
@@ -16,7 +16,7 @@ public class Main {
         Configuration.initialize(args.length == 0 || args[0].isEmpty()
             ? DEFAULT_CONFIG_FILE_PATH
             : args[0]);
-        DataAccessObject.init(
+        Access.init(
             Configuration.databaseUrl(),
             Configuration.databaseUser(),
             Configuration.databasePass(),

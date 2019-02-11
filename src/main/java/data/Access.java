@@ -8,16 +8,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Walter Grönholm
  */
-public abstract class DataAccessObject implements UserDAO, LedgerDAO, ItemDAO, Populator {
+public abstract class Access implements UserDAO, LedgerDAO, ItemDAO, Populator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DataAccessObject.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Access.class);
 
-    private static DataAccessObject instance;
+    private static Access instance;
 
     /**
      * @return the static DAO instance
      */
-    public static DataAccessObject getInstance() {
+    public static Access getInstance() {
         if (instance == null) {
             throw new IllegalStateException("No DataAccessObject has been initialized");
         }

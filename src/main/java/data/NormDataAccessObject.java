@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Walter Grönholm
  */
-public class NormDataAccessObject extends DataAccessObject {
+public class NormDataAccessObject extends Access {
 
     private final com.dieselpoint.norm.Database db;
 
@@ -118,7 +118,7 @@ public class NormDataAccessObject extends DataAccessObject {
 
     @Override
     public LedgerData populate(LedgerData ledger) {
-        List<PurchaseData> purchases = DataAccessObject.getInstance().getPurchases(ledger.id);
+        List<PurchaseData> purchases = Access.getInstance().getPurchases(ledger.id);
         ledger.getPurchases().addAll(purchases);
         return ledger;
     }
