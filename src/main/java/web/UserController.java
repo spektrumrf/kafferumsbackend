@@ -27,7 +27,7 @@ class UserController {
     private static final double INCREMENTAL_TIMEOUT = 1200.0;
 
     static final Route getUserNames = (Request request, Response response) -> {
-        List<String> userNames = Access.getInstance().getUserNames();
+        List<String> userNames = Access.data().users.names();
         return JsonUtils.jsonResponse(userNames, List.class, response);
     };
 
@@ -58,8 +58,8 @@ class UserController {
 
         //TODO: validate that the user exists
         LOG.info("Verifying PIN for " + userName + " coming from " + request.ip());
-        String storedPin = Access.getInstance().getPassword(userName);
-        int failedAttempts = Access.getInstance().getLoginAttempts(userName); //todo minimize DB calls
+        String storedPin = Access.data().users.password(userName);
+        int failedAttempts = Access.data().users.loginAttempts(userName); //todo minimize DB calls
 
         boolean success = PasswordUtils.verify(pin, storedPin);
         if (success) {
@@ -68,10 +68,10 @@ class UserController {
             failedAttempts++;
         }
 
-        Access.getInstance().setLoginAttempts(userName, failedAttempts);
+        Access.data().users.loginAttempts(userName, failedAttempts);
         
         String token = success ? AuthenticationUtils.tokenize(userName) : null;
-        LedgerData latestLedger = success ? Access.getInstance().getLatestLedger(userName) : null;
+        LedgerData latestLedger = success ? Access.data().ledgers.latestLedger(userName) : null;
         Integer latestLedgerId = latestLedger != null ? latestLedger.id : null;
 
         Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
@@ -88,7 +88,7 @@ class UserController {
     static final Filter verifyAdmin = (Request request, Response response) -> {
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = Access.getInstance().getUserData(userName);
+        UserData userData = Access.data().users.data(userName);
         if (!userData.isAdmin()) {
             LOG.info(request.ip() + " tried to access admin page without proper authorization");
             Spark.halt(401, "You are not worthy!");

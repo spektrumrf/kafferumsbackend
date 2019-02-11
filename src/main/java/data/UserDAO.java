@@ -8,16 +8,16 @@ import java.util.List;
  */
 public interface UserDAO {
 
-    public List<String> getUserNames();
+    public List<String> names();
 
-    public String getPassword(String userName);
+    public String password(String userName);
     
-    public int getLoginAttempts(String userName);
+    public int loginAttempts(String userName);
 
-    public void setLoginAttempts(String userName, int failedAttempts);
+    public void loginAttempts(String userName, int failedAttempts);
     
-    public UserData getUserData(String userName);
+    public UserData data(String userName);
 
-    public UserData getUserData(int userId);
+    public UserData data(int userId);
 
 }

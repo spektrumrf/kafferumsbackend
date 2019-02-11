@@ -11,5 +11,5 @@ public interface ItemDAO {
     /**
      * @return all items found in database, in an ID --> DATA map.
      */
-    Map<Integer, ItemData> getItemIdMap();
+    Map<Integer, ItemData> itemMap();
 }

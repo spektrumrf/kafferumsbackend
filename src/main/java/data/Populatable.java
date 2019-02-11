@@ -10,6 +10,6 @@ abstract public class Populatable {
     abstract public <T extends Populatable> T populated();
 
     protected Populator populator() {
-        return Access.getInstance();
+        return Access.data().populator;
     }
 }

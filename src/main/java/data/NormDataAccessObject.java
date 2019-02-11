@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Walter Grönholm
  */
-public class NormDataAccessObject extends Access {
+public class NormDataAccessObject implements UserDAO, LedgerDAO, ItemDAO, Populator {
 
     private final com.dieselpoint.norm.Database db;
 
@@ -23,8 +23,7 @@ public class NormDataAccessObject extends Access {
         db.setDriverClassName("org.h2.Driver");
     }
 
-    @Override
-    protected void testConnection(int timeout) {
+    void testConnection(int timeout) {
         try {
             if (!db.getConnection().isValid(timeout)) {
                 throw new IllegalStateException("Connection to database is either closed or invalid");
@@ -35,32 +34,32 @@ public class NormDataAccessObject extends Access {
     }
 
     @Override
-    public List<String> getUserNames() {
+    public List<String> names() {
         return db.sql("SELECT NAME FROM USER").results(String.class);
     }
 
     @Override
-    public String getPassword(String userName) {
+    public String password(String userName) {
         return db.sql("SELECT LOGIN.DATA FROM LOGIN JOIN USER ON LOGIN.ID = USER.ID_LOGIN WHERE USER.NAME = ?", userName).first(String.class);
     }
 
     @Override
-    public int getLoginAttempts(String userName) {
+    public int loginAttempts(String userName) {
         return db.sql("SELECT LOGIN.ATTEMPTS FROM LOGIN JOIN USER ON LOGIN.ID = USER.ID_LOGIN WHERE USER.NAME = ?", userName).first(int.class);
     }
 
     @Override
-    public void setLoginAttempts(String userName, int failedAttempts) {
+    public void loginAttempts(String userName, int failedAttempts) {
         db.sql("UPDATE LOGIN SET ATTEMPTS = ? WHERE ID = (SELECT ID_LOGIN FROM USER WHERE NAME = ?)", failedAttempts, userName).execute();
     }
 
     @Override
-    public UserData getUserData(String userName) {
+    public UserData data(String userName) {
         return db.where("name=?", userName).first(UserData.class);
     }
 
     @Override
-    public UserData getUserData(int userId) {
+    public UserData data(int userId) {
         return db.where("id=?", userId).first(UserData.class);
     }
 
@@ -77,18 +76,18 @@ public class NormDataAccessObject extends Access {
     }
 
     @Override
-    public LedgerData getLedger(int ledgerId) {
+    public LedgerData ledger(int ledgerId) {
         return db.where("id=?", ledgerId).first(LedgerData.class);
     }
 
     @Override
-    public List<LedgerData> getLedgers(int userId) {
+    public List<LedgerData> ledgers(int userId) {
         return db.where("id_user=?", userId).results(LedgerData.class);
     }
     
     @Override
-    public LedgerData getLatestLedger(String userName) {
-        UserData user = getUserData(userName);
+    public LedgerData latestLedger(String userName) {
+        UserData user = data(userName);
         return getLatestLedger(user.id);
     }
 
@@ -107,7 +106,7 @@ public class NormDataAccessObject extends Access {
     }
 
     @Override
-    public List<PurchaseData> getPurchases(int ledgerId) {
+    public List<PurchaseData> purchases(int ledgerId) {
         return db.where("id_ledger=?", ledgerId).results(PurchaseData.class);
     }
 
@@ -118,13 +117,13 @@ public class NormDataAccessObject extends Access {
 
     @Override
     public LedgerData populate(LedgerData ledger) {
-        List<PurchaseData> purchases = Access.getInstance().getPurchases(ledger.id);
+        List<PurchaseData> purchases = purchases(ledger.id);
         ledger.getPurchases().addAll(purchases);
         return ledger;
     }
 
     @Override
-    public Map<Integer, ItemData> getItemIdMap() {
+    public Map<Integer, ItemData> itemMap() {
         List<ItemData> items = db.results(ItemData.class);
         Map<Integer, ItemData> map = new HashMap<>();
         items.stream().forEach((item) -> {
