@@ -1,6 +1,7 @@
 package data;
 
 /**
+ * Helper class to be extended by all populatable data classes.
  *
  * @author Walter Grönholm
  */

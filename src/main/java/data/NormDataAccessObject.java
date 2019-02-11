@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Essentially a big collection of database queries.
  *
  * @author Walter Grönholm
  */

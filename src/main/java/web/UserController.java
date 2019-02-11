@@ -69,7 +69,7 @@ class UserController {
         }
 
         DataAccessObject.getInstance().setLoginAttempts(userName, failedAttempts);
-
+        
         String token = success ? AuthenticationUtils.tokenize(userName) : null;
         LedgerData latestLedger = success ? DataAccessObject.getInstance().getLatestLedger(userName) : null;
         Integer latestLedgerId = latestLedger != null ? latestLedger.id : null;
