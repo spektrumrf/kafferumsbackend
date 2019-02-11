@@ -20,7 +20,8 @@ public class Main {
             Configuration.databaseUrl(),
             Configuration.databaseUser(),
             Configuration.databasePass(),
-            Configuration.databaseTimeout());
+            Configuration.databaseTimeout()
+        );
         new Router().run();
     }
 }

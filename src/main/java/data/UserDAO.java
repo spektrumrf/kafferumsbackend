@@ -16,8 +16,8 @@ public interface UserDAO {
 
     public void loginAttempts(String userName, int failedAttempts);
     
-    public UserData data(String userName);
+    public UserData withName(String userName);
 
-    public UserData data(int userId);
+    public UserData withId(int userId);
 
 }

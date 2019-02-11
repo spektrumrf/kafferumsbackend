@@ -8,13 +8,13 @@ import java.util.List;
  */
 public interface LedgerDAO {
     
-    List<LedgerData> ledgers(int userId);
+    List<LedgerData> ofUser(int userId);
 
-    LedgerData ledger(int ledgerId);
+    LedgerData withId(int ledgerId);
     
     List<PurchaseData> purchases(int ledgerId);
 
     void addPurchase(int ledgerId, PurchaseData purchaseData);
     
-    LedgerData latestLedger(String userName);
+    LedgerData latestLedgerOf(String userName);
 }

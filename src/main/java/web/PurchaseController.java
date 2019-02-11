@@ -51,7 +51,7 @@ public class PurchaseController {
         PurchaseJsonData purchaseData = JsonUtils.GSON.fromJson(request.body(), PurchaseJsonData.class);
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = Access.data().users.data(userName);
+        UserData userData = Access.data().users.withName(userName);
         
         PurchaseResult result = tryPurchasing(userData, purchaseData);
         return JsonUtils.jsonResponse(result, PurchaseResult.class, response);
@@ -60,7 +60,7 @@ public class PurchaseController {
     private static PurchaseResult tryPurchasing(UserData userData, PurchaseJsonData purchaseJsonData) {
         Validate.notNull("userData", userData);
         Validate.notNull("purchaseJsonData", purchaseJsonData);
-        LedgerData ledger = Access.data().ledgers.ledger(purchaseJsonData.ledgerId);
+        LedgerData ledger = Access.data().ledgers.withId(purchaseJsonData.ledgerId);
         if (ledger == null) {
             LOG.error("Could not find ledger with id " + purchaseJsonData.ledgerId);
             return PurchaseResult.INVALID_LEDGER;

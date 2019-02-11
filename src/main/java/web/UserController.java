@@ -16,7 +16,7 @@ import spark.Route;
 import spark.Spark;
 
 /**
- * Handles User data requests
+ * Handles User withName requests
  *
  * @author Walter Grönholm
  */
@@ -71,7 +71,7 @@ class UserController {
         Access.data().users.loginAttempts(userName, failedAttempts);
         
         String token = success ? AuthenticationUtils.tokenize(userName) : null;
-        LedgerData latestLedger = success ? Access.data().ledgers.latestLedger(userName) : null;
+        LedgerData latestLedger = success ? Access.data().ledgers.latestLedgerOf(userName) : null;
         Integer latestLedgerId = latestLedger != null ? latestLedger.id : null;
 
         Thread.sleep((long) Math.floor(INCREMENTAL_TIMEOUT * failedAttempts));
@@ -88,7 +88,7 @@ class UserController {
     static final Filter verifyAdmin = (Request request, Response response) -> {
         String token = request.queryParams("token");
         String userName = AuthenticationUtils.verifyAndDetokenize(token);
-        UserData userData = Access.data().users.data(userName);
+        UserData userData = Access.data().users.withName(userName);
         if (!userData.isAdmin()) {
             LOG.info(request.ip() + " tried to access admin page without proper authorization");
             Spark.halt(401, "You are not worthy!");
