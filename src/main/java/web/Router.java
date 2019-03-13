@@ -32,6 +32,7 @@ public class Router implements Runnable {
     
     private static final Filter logRequest = (request, response) -> {
         LOG.info("Received " + request.requestMethod() + " call to " + request.uri());
+        Thread.sleep(200);
     };
 
     @Override
